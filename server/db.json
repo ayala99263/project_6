@@ -107,24 +107,6 @@
         "catchPhrase": "we are great!!!",
         "bs": "ayala & tehila"
       }
-    },
-    {
-      "id": "ac4e",
-      "name": "תהילה גולדשמידט",
-      "username": "tehila",
-      "email": "tehila7929@gmail.com",
-      "address": {
-        "street": "כפר עברי",
-        "number": "28",
-        "city": "ירושלים"
-      },
-      "phone": "0556747929",
-      "website": "TG2163",
-      "company": {
-        "name": " my company",
-        "catchPhrase": "qwerty",
-        "bs": "asdfg"
-      }
     }
   ],
   "posts": [
@@ -2306,7 +2288,7 @@
       "userId": 2,
       "id": "21",
       "title": "Brainstorm creative project ideas",
-      "completed": false
+      "completed": true
     },
     {
       "userId": 2,
@@ -2781,6 +2763,18 @@
       "id": "100",
       "title": "Embrace wild and free spirit",
       "completed": false
+    },
+    {
+      "id": "0a2c",
+      "userId": "4988",
+      "title": "גכעגככיע",
+      "completed": false
+    },
+    {
+      "id": "d2e5",
+      "userId": "4988",
+      "title": "חיעלוחיךח",
+      "completed": true
     }
   ],
   "albums": [
