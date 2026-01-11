@@ -7,6 +7,8 @@ import Register from './components/Register';
 import Home from './components/Home';
 import Layout from './components/Layout';
 import RegisterDetails from './components/RegisterDetails';
+import Todos from './components/Todos';
+import Posts from './components/Posts';
 
 function App() {
 
@@ -28,8 +30,8 @@ function App() {
           <Route element={<Layout />}>
 
             <Route path="home" element={<Home />} />
-            {/* <Route path="users/:id/todos" element={<Todos />} />
-            <Route path="users/:id/posts" element={<Posts />} /> */}
+            <Route path="users/:id/todos" element={<Todos />} />
+            <Route path="users/:id/posts" element={<Posts />} />
 
           </Route>
         </Routes>
