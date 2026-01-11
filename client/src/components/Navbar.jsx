@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = ({ user, handleLogout, setShowInfo }) => {
 
-  console.log(user)
   return (
     <nav >
       <button onClick={() => setShowInfo(true)}>Info</button>
