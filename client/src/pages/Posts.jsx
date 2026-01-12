@@ -1,63 +1,91 @@
 import { useParams } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
+import { useResource } from '../hooks/useResource';
 import PostCard from "../components/PostCard";
 
-
-export default function Posts() {
-
-    const [posts, setPosts] = useState([]);
+export default function Posts({currentUser}) {
     const { id } = useParams();
+    
+    const { data: posts, add, remove, update } = useResource('posts', { userId: id });
 
-    useEffect(() => {
-        getPosts();
-    }, []);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [searchBy, setSearchBy] = useState("title"); 
 
-    const getPosts = async () => {
-        try {
-            const res = await axios.get(`http://localhost:3000/posts?userId=${id}`);
-            setPosts(res.data);
-        }
-        catch (err) {
-            console.error(err);
-        }
-    }
+    const [addPostInput, setAddPostInput] = useState(false);
+    const [newPost, setNewPost] = useState({ title: '', body: '' });
 
-    const addPost = async (e) => {
+    const handleAdd = async (e) => {
         e.preventDefault();
-        //     try {
-        //         const res = await axios.post("http://localhost:3000/posts", newTodo);
-        //         setPosts([...todos, res.data]);
-        //         setNewPost({ userId: id, title: "", completed: false });
-        //         setAddPostInput(false);
-        //     }
-        //     catch (err) {
-        //         console.error(err);
-        //     }
-    }
+        if (!newPost.title || !newPost.body) return;
+        
+        await add(newPost);
+        
+        setNewPost({ title: '', body: '' });
+        setAddPostInput(false);
+    };
+
+    const filteredPosts = posts.filter(post => {
+        if (searchBy === 'id') {
+            return post.id.toString().includes(searchTerm);
+        } else {
+            return post.title.toLowerCase().includes(searchTerm.toLowerCase());
+        }
+    });
 
     return (
-        <div>
+        <div className="posts-page">
             <h1>Posts</h1>
-            <button onClick={() => setAddTodoInput(!addTodoInput)}>add todos</button>
-            {addPostInput && <form onSubmit={addPost}>
-                <input type="text"
-                    placeholder="title"
-                    name="title"
-                    onChange={handleChange}
-                    value={newTodo.title} />
-                <label htmlFor="completed">complete</label>
-                <input type="checkbox"
-                    name='completed'
-                    onChange={(e) => setNewTodo({ ...newTodo, completed: e.target.checked })}
-                    checked={newTodo.completed} />
-                <button type="submit">add</button>
-            </form>}
-            <div>
-                {posts.map(post => (
-                    <div key={post.id}>
-                        <PostCard post={post} setPosts={setPosts} />
+
+            <div style={{ margin: '20px 0', display: 'flex', gap: '10px' }}>
+                <select value={searchBy} onChange={(e) => setSearchBy(e.target.value)}>
+                    <option value="title">Title</option>
+                    <option value="id">ID</option>
+                </select>
+                <input 
+                    type="text" 
+                    placeholder={`Search by ${searchBy}...`} 
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    style={{ padding: '5px', flexGrow: 1 }}
+                />
+            </div>
+
+            <button onClick={() => setAddPostInput(!addPostInput)}>
+                {addPostInput ? 'Cancel Add' : 'Add New Post'}
+            </button>
+
+            {addPostInput && (
+                <form onSubmit={handleAdd} style={{ margin: '15px 0', border: '1px solid #eee', padding: '10px' }}>
+                    <div style={{ marginBottom: '10px' }}>
+                        <input
+                            type="text"
+                            placeholder="Title..."
+                            value={newPost.title}
+                            onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
+                            style={{ width: '100%', padding: '5px' }}
+                        />
                     </div>
+                    <div>
+                        <textarea
+                            placeholder="Body content..."
+                            value={newPost.body}
+                            onChange={(e) => setNewPost({ ...newPost, body: e.target.value })}
+                            style={{ width: '100%', height: '80px', padding: '5px' }}
+                        />
+                    </div>
+                    <button type="submit" style={{ marginTop: '5px' }}>Save Post</button>
+                </form>
+            )}
+
+            <div className="posts-list">
+                {filteredPosts.map(post => (
+                    <PostCard 
+                        key={post.id} 
+                        post={post} 
+                        deletePost={() => remove(post.id)} 
+                        updatePost={(updatedFields) => update(post.id, updatedFields)}
+                        currentUser={currentUser}
+                    />
                 ))}
             </div>
         </div>

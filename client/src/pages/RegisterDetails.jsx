@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from "react-router-dom";
 
-export default function RegisterDetails() {
+export default function RegisterDetails({setCurrentUser}) {
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -91,8 +91,8 @@ export default function RegisterDetails() {
             try {
                 const res = await axios.post("http://localhost:3000/users", formData);
                 localStorage.setItem("currentUser", JSON.stringify(res.data));
+                setCurrentUser(res.data)
                 navigate(`/home`);
-
             }
             catch (err) {
                 setServerError(err);

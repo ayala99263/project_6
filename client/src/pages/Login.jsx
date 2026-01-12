@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
-export default function Login() {
+export default function Login({setCurrentUser}) {
 
     const navigate = useNavigate();
 
@@ -29,6 +29,7 @@ export default function Login() {
                 if (res.data[0].website === password) {
                     setMessage("Login successful");
                     localStorage.setItem("currentUser", JSON.stringify(res.data[0]));
+                    setCurrentUser(res.data[0]);
                     navigate(`/home`);
                 }
                 else {

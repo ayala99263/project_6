@@ -4,7 +4,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import Info from './Info'
 
-const Layout = () => {
+export default function Layout({setCurrentUser}){
     const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem('currentUser'));
     const [showInfoState, setShowInfoState] = React.useState(false);
@@ -18,6 +18,7 @@ const Layout = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('currentUser');
+        setCurrentUser(null)
         navigate('/');
     };
 
@@ -40,4 +41,3 @@ const Layout = () => {
     );
 };
 
-export default Layout;
