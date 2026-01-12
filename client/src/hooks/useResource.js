@@ -1,22 +1,22 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-// הוספנו פרמטר שני: userId (שהוא אופציונלי, למקרה שאין משתמש)
-export const useResource = (resourceName, userId = null) => {
+// הוספנו פרמטר שני: generalId (שהוא אופציונלי, למקרה שאין משתמש)
+export const useResource = (resourceName, generalId = null) => {
     const [data, setData] = useState([]);
 
     const baseUrl = `http://localhost:3000/${resourceName}`;
 
-    // הוספנו את userId לרשימת התלויות, כדי שאם המשתמש מתחלף - הנתונים יתרעננו
+    // הוספנו את generalId לרשימת התלויות, כדי שאם המשתמש מתחלף - הנתונים יתרעננו
     useEffect(() => {
         if (resourceName) getAll();
-    }, [resourceName, userId]);
+    }, [resourceName, generalId]);
 
     const getAll = async () => {
         try {
-            // אם יש userId, אנחנו מוסיפים אותו לסינון ב-URL
-            // התוצאה תהיה: http://localhost:3000/todos?userId=5
-            const url = userId ? `${baseUrl}?userId=${userId}` : baseUrl;
+            // אם יש generalId, אנחנו מוסיפים אותו לסינון ב-URL
+            // התוצאה תהיה: http://localhost:3000/todos?generalId=5
+            const url = generalId ? `${baseUrl}?generalId=${generalId}` : baseUrl;
             
             const res = await axios.get(url);
             setData(res.data);
@@ -25,8 +25,8 @@ export const useResource = (resourceName, userId = null) => {
 
     const add = async (newItem) => {
         try {
-            // טריק חשוב: אנחנו מוסיפים את ה-userId לאובייקט באופן אוטומטי!
-            const itemToSend = userId ? { ...newItem, userId } : newItem;
+            // טריק חשוב: אנחנו מוסיפים את ה-generalId לאובייקט באופן אוטומטי!
+            const itemToSend = generalId ? { ...newItem, generalId } : newItem;
             
             const res = await axios.post(baseUrl, itemToSend);
             setData([...data, res.data]);
