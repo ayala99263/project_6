@@ -4,7 +4,7 @@ import { useResource } from '../hooks/useResource';
 export default function PostComments({ postId, currentUser }) {
     const { data: comments, add, remove, update } = useResource('comments', { postId });
     const [newCommentBody, setNewCommentBody] = useState("");
-    const [editingId, setEditingId] = useState(null); 
+    const [editingId, setEditingId] = useState(null);
     const [editBody, setEditBody] = useState("");
 
     const handleAddComment = async () => {
@@ -12,9 +12,9 @@ export default function PostComments({ postId, currentUser }) {
         const commentData = {
             body: newCommentBody,
             email: currentUser.email,
-            name: currentUser.name || currentUser.username 
+            name: currentUser.name || currentUser.username
         };
-        await add(commentData); 
+        await add(commentData);
         setNewCommentBody("");
     };
 
@@ -34,7 +34,7 @@ export default function PostComments({ postId, currentUser }) {
 
             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                 {comments.length === 0 && <li style={{ color: '#777' }}>No comments yet.</li>}
-                
+
                 {comments.map(comment => {
                     const isOwner = comment.email === currentUser.email;
 
@@ -44,8 +44,8 @@ export default function PostComments({ postId, currentUser }) {
                                 <span style={{ fontWeight: 'bold', fontSize: '0.85rem', color: '#555' }}>
                                     {comment.email}
                                 </span>
-                                
-                                {isOwner && !editingId && (
+
+                                {isOwner && (!editingId || editingId !== comment.id) && (
                                     <div style={{ fontSize: '0.8rem' }}>
                                         <button onClick={() => startEdit(comment)} style={{ marginRight: '5px', color: 'blue', border: 'none', background: 'none', cursor: 'pointer' }}>Edit</button>
                                         <button onClick={() => remove(comment.id)} style={{ color: 'red', border: 'none', background: 'none', cursor: 'pointer' }}>Delete</button>
@@ -55,7 +55,7 @@ export default function PostComments({ postId, currentUser }) {
 
                             {editingId === comment.id ? (
                                 <div style={{ marginTop: '5px' }}>
-                                    <textarea 
+                                    <textarea
                                         value={editBody}
                                         onChange={(e) => setEditBody(e.target.value)}
                                         style={{ width: '100%', padding: '5px' }}
@@ -74,14 +74,14 @@ export default function PostComments({ postId, currentUser }) {
             </ul>
 
             <div style={{ marginTop: '15px', display: 'flex', gap: '8px' }}>
-                <input 
-                    type="text" 
-                    placeholder="Write a comment..." 
+                <input
+                    type="text"
+                    placeholder="Write a comment..."
                     value={newCommentBody}
                     onChange={(e) => setNewCommentBody(e.target.value)}
                     style={{ flexGrow: 1, padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
                 />
-                <button 
+                <button
                     onClick={handleAddComment}
                     disabled={!newCommentBody}
                     style={{ padding: '8px 15px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
