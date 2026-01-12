@@ -7,6 +7,7 @@ import Layout from './components/Layout';
 import RegisterDetails from './pages/RegisterDetails';
 import Todos from './pages/Todos';
 import Posts from './pages/Posts';
+import Albums from './pages/Albums';
 
 function App() {
 
@@ -30,6 +31,7 @@ function App() {
             <Route path="home" element={<Home />} />
             <Route path="users/:id/todos" element={<Todos />} />
             <Route path="users/:id/posts" element={<Posts />} />
+            <Route path="users/:id/albums" element={<Albums />} />
 
           </Route>
         </Routes>
