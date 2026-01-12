@@ -1,14 +1,12 @@
 import './App.css'
-import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import axios from 'axios';
 import Login from './components/Login';
 import Register from './components/Register';
 import Home from './components/Home';
 import Layout from './components/Layout';
 import RegisterDetails from './components/RegisterDetails';
-import Todos from './components/Todos';
-import Posts from './components/Posts';
+import Todos from './components/pages/Todos';
+import Posts from './components/pages/Posts';
 
 function App() {
 

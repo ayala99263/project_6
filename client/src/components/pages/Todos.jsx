@@ -1,15 +1,21 @@
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useResource } from '../../hooks/useResource';
 
 export default function Todos() {
     const { id } = useParams();
-    const [todos, setTodos] = useState([]);
+    
+    // 2. שימוש בהוק כדי לקבל את המידע והפונקציות
+    // אנחנו שולחים 'todos' ואת ה-id של המשתמש
+    const { data: todos, add, remove, update } = useResource('todos', id);
+
+    // --- משתני UI בלבד (לא קשורים לשרת) ---
     const [addTodoInput, setAddTodoInput] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [editTitle, setEditTitle] = useState("");
+    
+    // ניהול הטופס של הוספה חדשה
     const [newTodo, setNewTodo] = useState({
-        userId: id,
         title: "",
         completed: false
     });
@@ -18,80 +24,42 @@ export default function Todos() {
         setNewTodo({ ...newTodo, [e.target.name]: e.target.value });
     };
 
-    useEffect(() => {
-        getTodos();
-    }, []);
+    // --- פונקציות מעטפת (Wrappers) ---
+    // הפונקציות האלו קוראות להוק, ואז מסדרות את התצוגה (מאפסות טופס וכו')
 
-    const getTodos = async () => {
-        try {
-            const res = await axios.get(`http://localhost:3000/todos?userId=${id}`);
-            setTodos(res.data);
-        }
-        catch (err) {
-            console.error(err);
-        }
-    }
-
-    const addTodo = async (e) => {
+    const handleAdd = async (e) => {
         e.preventDefault();
-        try {
-            const res = await axios.post("http://localhost:3000/todos", newTodo);
-            setTodos([...todos, res.data]); 
-            setNewTodo({ userId: id, title: "", completed: false });
-            setAddTodoInput(false);
-        }
-        catch (err) {
-            console.error(err);
-        }
-    }
+        // ה-Hook כבר יודע להוסיף את ה-userId לבד!
+        await add(newTodo); 
+        
+        // איפוס הטופס וסגירתו
+        setNewTodo({ title: "", completed: false });
+        setAddTodoInput(false);
+    };
 
-    const updateTodo = async (todoId, updates) => {
-        try {
-            await axios.patch(`http://localhost:3000/todos/${todoId}`, updates);
-            setTodos(todos.map(todo => 
-                todo.id === todoId ? { ...todo, ...updates } : todo
-            ));
-        }
-        catch (err) {
-            console.error(err);
-        }
-    }
-
-    const editTodo = async (todoId) => {
-        await updateTodo(todoId, { title: editTitle });
+    const handleSaveEdit = async (todoId) => {
+        await update(todoId, { title: editTitle });
         setEditingId(null);
         setEditTitle("");
-    }
+    };
 
-    const toggleTodo = async (todoId, currentCompleted) => {
-        await updateTodo(todoId, { completed: !currentCompleted });
-    }
-
+    // פונקציות UI פשוטות
     const startEdit = (todo) => {
         setEditingId(todo.id);
         setEditTitle(todo.title);
-    }
+    };
 
     const cancelEdit = () => {
         setEditingId(null);
         setEditTitle("");
-    }
-
-    const deleteTodo = async (todoId) => {
-        try {
-            await axios.delete(`http://localhost:3000/todos/${todoId}`);
-            setTodos(todos.filter(todo => todo.id !== todoId)); // מחיקה מקומית
-        }
-        catch (err) {
-            console.error(err);
-        }
-    }
+    };
 
     return (
         <div>
             <h1>todos</h1>
             <button onClick={() => setAddTodoInput(!addTodoInput)}>add todos</button>
-            {addTodoInput && <form onSubmit={addTodo}>
+            
+            {addTodoInput && <form onSubmit={handleAdd}>
                 <input type="text"
                     placeholder="title"
                     name="title"
@@ -111,7 +79,8 @@ export default function Todos() {
                         <input 
                             type="checkbox" 
                             checked={todo.completed} 
-                            onChange={() => toggleTodo(todo.id, todo.completed)}
+                            // שימוש ישיר בפונקציית העדכון מההוק
+                            onChange={() => update(todo.id, { completed: !todo.completed })}
                         />
                         {editingId === todo.id ? (
                             <>
@@ -120,20 +89,22 @@ export default function Todos() {
                                     value={editTitle} 
                                     onChange={(e) => setEditTitle(e.target.value)}
                                 />
-                                <button onClick={() => editTodo(todo.id)}>Save</button>
+                                <button onClick={() => handleSaveEdit(todo.id)}>Save</button>
                                 <button onClick={cancelEdit}>Cancel</button>
                             </>
                         ) : (
                             <>
-                                <span>{todo.title}</span>
+                                <span style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}>
+                                    {todo.title}
+                                </span>
                                 <button onClick={() => startEdit(todo)}>Edit</button>
                             </>
                         )}
-                        <button onClick={() => deleteTodo(todo.id)}>Delete</button>
+                        {/* שימוש ישיר בפונקציית המחיקה מההוק */}
+                        <button onClick={() => remove(todo.id)}>Delete</button>
                     </div>
                 ))}
             </div>
-
         </div>
     )
 }

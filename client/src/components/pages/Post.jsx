@@ -41,20 +41,7 @@
 // return (
 //     <div>
 //         <h1>post</h1>
-//         <button onClick={() => setAddTodoInput(!addTodoInput)}>add todos</button>
-//         {addTodoInput && <form onSubmit={addTodo}>
-//             <input type="text"
-//                 placeholder="title"
-//                 name="title"
-//                 onChange={handleChange}
-//                 value={newTodo.title} />
-//             <label htmlFor="completed">complete</label>
-//             <input type="checkbox"
-//                 name='completed'
-//                 onChange={(e) => setNewTodo({ ...newTodo, completed: e.target.checked })}
-//                 checked={newTodo.completed} />
-//             <button type="submit">add</button>
-//         </form>}
+//        
 
 //         <div>
 //             {todos.map(todo => (
@@ -74,13 +61,13 @@
 // )
 import { useState } from 'react';
 
-export default function Post({ post, setPOsts }) {
+export default function Post({ post, setPosts }) {
     const [showPost, setShowPost] = useState(false);
 
     const deletePost = async (postId) => {
         try {
             await axios.delete(`http://localhost:3000/Posts/${postId}`);
-            setPOsts(Posts.filter(post => post.id !== postId));
+            setPosts(Posts.filter(post => post.id !== postId));
         }
         catch (err) {
             console.error(err);
