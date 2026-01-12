@@ -8,6 +8,7 @@ import Layout from './components/Layout';
 import RegisterDetails from './pages/RegisterDetails';
 import Todos from './pages/Todos';
 import Posts from './pages/Posts';
+import Albums from './pages/Albums';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState(() => {
@@ -36,7 +37,7 @@ export default function App() {
 
             <Route path="home" element={<Home />} />
             <Route path="users/:id/todos" element={<Todos />} />
-            <Route path="users/:id/posts" element={<Posts currentUser={currentUser} />} />
+            <Route path="users/:id/posts" element={<Posts />} />
 
           </Route>
         </Routes>
