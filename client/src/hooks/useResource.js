@@ -1,27 +1,25 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-// הוספנו פרמטר שני: userId (שהוא אופציונלי, למקרה שאין משתמש)
-export const useResource = (resourceName, userId = null) => {
+// ההוק מקבל את שם המשאב ואובייקט של פרמטרים לסינון
+export const useResource = (resourceName, queryParams = {}) => {
     const [data, setData] = useState([]);
 
     const baseUrl = `http://localhost:3000/${resourceName}`;
 
-    // הוספנו את userId לרשימת התלויות, כדי שאם המשתמש מתחלף - הנתונים יתרעננו
     useEffect(() => {
-        if (resourceName) getAll();
-    }, [resourceName, userId]);
+        if (!resourceName) return;
 
-    const getAll = async () => {
-        try {
-            // אם יש userId, אנחנו מוסיפים אותו לסינון ב-URL
-            // התוצאה תהיה: http://localhost:3000/todos?userId=5
-            const url = userId ? `${baseUrl}?userId=${userId}` : baseUrl;
-            
-            const res = await axios.get(url);
-            setData(res.data);
-        } catch (err) { console.error(err); }
-    };
+        // הגדרת הפונקציה בתוך ה-useEffect כדי למנוע בעיות תלות
+        const fetchData = async () => {
+            try {
+                // שליחה לשרת עם הסינון (למשל ?userId=1)
+                const res = await axios.get(baseUrl, { params: queryParams });
+                setData(res.data);
+            } catch (err) {
+                console.error("Error fetching data:", err);
+            }
+        };
 
         fetchData();
 
@@ -33,9 +31,8 @@ export const useResource = (resourceName, userId = null) => {
     // הוספה (Create)
     const add = async (newItem) => {
         try {
-            // טריק חשוב: אנחנו מוסיפים את ה-userId לאובייקט באופן אוטומטי!
-            const itemToSend = userId ? { ...newItem, userId } : newItem;
-            
+            // מיזוג הפריט החדש עם הפרמטרים (למשל הוספת userId באופן אוטומטי)
+            const itemToSend = { ...newItem, ...queryParams };
             const res = await axios.post(baseUrl, itemToSend);
             setData(prevData => [...prevData, res.data]); // עדכון יעיל של ה-State
         } catch (err) {
