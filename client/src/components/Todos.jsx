@@ -20,7 +20,7 @@ export default function Todos() {
 
     useEffect(() => {
         getTodos();
-    }, [id]);
+    }, []);
 
     const getTodos = async () => {
         try {
