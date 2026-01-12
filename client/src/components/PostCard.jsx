@@ -61,7 +61,7 @@
 // )
 import { useState } from 'react';
 
-export default function Post({ post, setPosts }) {
+export default function PostCard({ post, setPosts }) {
     const [showPost, setShowPost] = useState(false);
 
     const deletePost = async (postId) => {

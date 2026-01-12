@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import Post from "../components/Post";
+import PostCard from "../components/PostCard";
 
 
 export default function Posts() {
@@ -56,7 +56,7 @@ export default function Posts() {
             <div>
                 {posts.map(post => (
                     <div key={post.id}>
-                        <Post post={post} setPosts={setPosts} />
+                        <PostCard post={post} setPosts={setPosts} />
                     </div>
                 ))}
             </div>
