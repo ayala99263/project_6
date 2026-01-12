@@ -3,37 +3,27 @@ import { useParams } from 'react-router-dom';
 import { useResource } from '../../hooks/useResource';
 
 export default function Todos() {
-    const { id } = useParams();
-    
-    // 2. שימוש בהוק כדי לקבל את המידע והפונקציות
-    // אנחנו שולחים 'todos' ואת ה-id של המשתמש
-    const { data: todos, add, remove, update } = useResource('todos', id);
+    const { id } = useParams(); // ה-ID של המשתמש מה-URL
 
-    // --- משתני UI בלבד (לא קשורים לשרת) ---
+    // קריאה להוק: "תביא לי todos ששייכים ל-userId הזה"
+    const { data: todos, add, remove, update } = useResource('todos', { userId: id });
+
+    // --- State מקומי לניהול ה-UI בלבד ---
     const [addTodoInput, setAddTodoInput] = useState(false);
+    const [newTodoTitle, setNewTodoTitle] = useState(""); // שומרים רק את הכותרת, ה-ID יתווסף לבד
     const [editingId, setEditingId] = useState(null);
     const [editTitle, setEditTitle] = useState("");
-    
-    // ניהול הטופס של הוספה חדשה
-    const [newTodo, setNewTodo] = useState({
-        title: "",
-        completed: false
-    });
 
-    const handleChange = (e) => {
-        setNewTodo({ ...newTodo, [e.target.name]: e.target.value });
-    };
-
-    // --- פונקציות מעטפת (Wrappers) ---
-    // הפונקציות האלו קוראות להוק, ואז מסדרות את התצוגה (מאפסות טופס וכו')
+    // --- פונקציות טיפול (Handlers) ---
 
     const handleAdd = async (e) => {
         e.preventDefault();
-        // ה-Hook כבר יודע להוסיף את ה-userId לבד!
-        await add(newTodo); 
+        if (!newTodoTitle) return;
+
+        // אנחנו שולחים רק כותרת וסטטוס. ה-Hook יוסיף את ה-userId אוטומטית!
+        await add({ title: newTodoTitle, completed: false });
         
-        // איפוס הטופס וסגירתו
-        setNewTodo({ title: "", completed: false });
+        setNewTodoTitle("");
         setAddTodoInput(false);
     };
 
@@ -43,46 +33,39 @@ export default function Todos() {
         setEditTitle("");
     };
 
-    // פונקציות UI פשוטות
-    const startEdit = (todo) => {
-        setEditingId(todo.id);
-        setEditTitle(todo.title);
-    };
-
-    const cancelEdit = () => {
-        setEditingId(null);
-        setEditTitle("");
-    };
-
     return (
-        <div>
-            <h1>todos</h1>
-            <button onClick={() => setAddTodoInput(!addTodoInput)}>add todos</button>
+        <div className="todos-container">
+            <h1>Todos List</h1>
             
-            {addTodoInput && <form onSubmit={handleAdd}>
-                <input type="text"
-                    placeholder="title"
-                    name="title"
-                    onChange={handleChange}
-                    value={newTodo.title} />
-                <label htmlFor="completed">complete</label>
-                <input type="checkbox"
-                    name='completed'
-                    onChange={(e) => setNewTodo({...newTodo, completed: e.target.checked})}
-                    checked={newTodo.completed} />
-                <button type="submit">add</button>
-            </form>}
+            <button onClick={() => setAddTodoInput(!addTodoInput)}>
+                {addTodoInput ? 'Cancel Add' : 'Add New Todo'}
+            </button>
 
-            <div>
+            {addTodoInput && (
+                <form onSubmit={handleAdd}>
+                    <input 
+                        type="text"
+                        placeholder="Title..."
+                        value={newTodoTitle}
+                        onChange={(e) => setNewTodoTitle(e.target.value)}
+                    />
+                    <button type="submit">Save</button>
+                </form>
+            )}
+
+            <div className="list">
                 {todos.map(todo => (
-                    <div key={todo.id}>
+                    <div key={todo.id} className="todo-item" style={{ border: '1px solid #ccc', margin: '10px', padding: '10px' }}>
+                        
+                        {/* Checkbox - מעדכן ישירות דרך ההוק */}
                         <input 
                             type="checkbox" 
                             checked={todo.completed} 
-                            // שימוש ישיר בפונקציית העדכון מההוק
                             onChange={() => update(todo.id, { completed: !todo.completed })}
                         />
+
                         {editingId === todo.id ? (
+                            // מצב עריכה
                             <>
                                 <input 
                                     type="text" 
@@ -90,21 +73,27 @@ export default function Todos() {
                                     onChange={(e) => setEditTitle(e.target.value)}
                                 />
                                 <button onClick={() => handleSaveEdit(todo.id)}>Save</button>
-                                <button onClick={cancelEdit}>Cancel</button>
+                                <button onClick={() => setEditingId(null)}>Cancel</button>
                             </>
                         ) : (
+                            // מצב תצוגה רגיל
                             <>
-                                <span style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}>
+                                <span style={{ textDecoration: todo.completed ? 'line-through' : 'none', margin: '0 10px' }}>
                                     {todo.title}
                                 </span>
-                                <button onClick={() => startEdit(todo)}>Edit</button>
+                                <button onClick={() => {
+                                    setEditingId(todo.id);
+                                    setEditTitle(todo.title);
+                                }}>Edit</button>
+                                
+                                <button onClick={() => remove(todo.id)} style={{ marginLeft: '5px', color: 'red' }}>
+                                    Delete
+                                </button>
                             </>
                         )}
-                        {/* שימוש ישיר בפונקציית המחיקה מההוק */}
-                        <button onClick={() => remove(todo.id)}>Delete</button>
                     </div>
                 ))}
             </div>
         </div>
-    )
+    );
 }
