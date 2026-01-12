@@ -107,6 +107,24 @@
         "catchPhrase": "we are great!!!",
         "bs": "ayala & tehila"
       }
+    },
+    {
+      "id": "ac4e",
+      "name": "תהילה גולדשמידט",
+      "username": "tehila",
+      "email": "tehila7929@gmail.com",
+      "address": {
+        "street": "כפר עברי",
+        "number": "28",
+        "city": "ירושלים"
+      },
+      "phone": "0556747929",
+      "website": "TG1234",
+      "company": {
+        "name": " my company",
+        "catchPhrase": "qwerty",
+        "bs": "asdfg"
+      }
     }
   ],
   "posts": [
@@ -2797,7 +2815,7 @@
     {
       "id": "e2c0",
       "title": "אני צריכה להכין שניצלים לארוחת צהרים",
-      "completed": false,
+      "completed": true,
       "userId": "ac4e"
     },
     {
@@ -2810,6 +2828,18 @@
       "id": "1ffd",
       "title": "לקום בבוקר😉",
       "completed": true,
+      "userId": "ac4e"
+    },
+    {
+      "id": "ff57",
+      "title": "גכעי",
+      "completed": false,
+      "userId": "c84d"
+    },
+    {
+      "id": "3da2",
+      "title": "TODOS",
+      "completed": false,
       "userId": "ac4e"
     }
   ],

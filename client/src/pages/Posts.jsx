@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import Post from "./Post";
+import Post from "../components/Post";
 
 
 export default function Posts() {

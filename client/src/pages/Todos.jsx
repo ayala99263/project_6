@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useResource } from '../../hooks/useResource';
+import { useResource } from '../hooks/useResource';
 
 export default function Todos() {
     const { id } = useParams(); // ה-ID של המשתמש מה-URL

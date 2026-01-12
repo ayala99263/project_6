@@ -1,12 +1,12 @@
 import './App.css'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './components/Login';
-import Register from './components/Register';
-import Home from './components/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Home from './pages/Home';
 import Layout from './components/Layout';
-import RegisterDetails from './components/RegisterDetails';
-import Todos from './components/pages/Todos';
-import Posts from './components/pages/Posts';
+import RegisterDetails from './pages/RegisterDetails';
+import Todos from './pages/Todos';
+import Posts from './pages/Posts';
 
 function App() {
 
