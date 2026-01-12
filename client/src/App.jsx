@@ -30,14 +30,14 @@ export default function App() {
 
           <Route path='/register' >
             <Route index element={<Register />} />
-            <Route path='details' element={<RegisterDetails setCurrentUser={setCurrentUser}/>} />
+            <Route path='details' element={<RegisterDetails setCurrentUser={setCurrentUser} />} />
           </Route>
 
-          <Route element={<Layout setCurrentUser={setCurrentUser}/>}>
+          <Route element={<Layout setCurrentUser={setCurrentUser} />}>
 
             <Route path="home" element={<Home />} />
             <Route path="users/:id/todos" element={<Todos />} />
-            <Route path="users/:id/posts" element={<Posts />} />
+            <Route path="users/:id/posts" element={<Posts currentUser={currentUser} />} />
 
           </Route>
         </Routes>
