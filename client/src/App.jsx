@@ -34,7 +34,6 @@ export default function App() {
             <Route path='details' element={<RegisterDetails setCurrentUser={setCurrentUser} />} />
           </Route>
 
-          {/* <Route element={<Layout setCurrentUser={setCurrentUser} />}> */}
           <Route element={<Layout currentUser={currentUser} setCurrentUser={setCurrentUser} />}>
 
             <Route path="home" element={<Home user={currentUser} />} />

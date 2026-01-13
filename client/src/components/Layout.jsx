@@ -57,7 +57,6 @@ export default function Layout({ currentUser, setCurrentUser }) {
         }
     }, []);
 
-
     const handleLogout = () => {
         localStorage.removeItem('currentUser');
         setCurrentUser(null);
