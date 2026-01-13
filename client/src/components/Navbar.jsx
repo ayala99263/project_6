@@ -7,9 +7,9 @@ const Navbar = ({ user, handleLogout, setShowInfo }) => {
     <nav >
       <button onClick={() => setShowInfo(true)}>Info</button>
 
-      <Link to={`/users/${user.id}/todos`}>Todos</Link>
-      <Link to={`/users/${user.id}/posts`}>Posts</Link>
-      <Link to={`/users/${user.id}/albums`}>Albums</Link>
+      <Link to={`/users/${user.id}/todos`}> Todos </Link>
+      <Link to={`/users/${user.id}/posts`}>Posts </Link>
+      <Link to={`/users/${user.id}/albums`}>Albums </Link>
 
       <button onClick={handleLogout} style={{ color: 'red' }}>Logout</button>
     </nav>

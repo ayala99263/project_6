@@ -1,10 +1,10 @@
 
-export default function Home(){
+export default function Home({user}) {
 
-    const user=1
-    return(
+    return (
         <div>
             <h1>Home</h1>
+            <p>HELLO {user.name}</p>
         </div>
     )
 }

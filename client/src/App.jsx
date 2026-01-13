@@ -33,9 +33,10 @@ export default function App() {
             <Route path='details' element={<RegisterDetails setCurrentUser={setCurrentUser} />} />
           </Route>
 
-          <Route element={<Layout setCurrentUser={setCurrentUser} />}>
+          {/* <Route element={<Layout setCurrentUser={setCurrentUser} />}> */}
+          <Route element={<Layout currentUser={currentUser} setCurrentUser={setCurrentUser} />}>
 
-            <Route path="home" element={<Home />} />
+            <Route path="home" element={<Home user={currentUser} />} />
             <Route path="users/:id/todos" element={<Todos />} />
             <Route path="users/:id/posts" element={<Posts currentUser={currentUser} />} />
 
