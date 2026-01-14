@@ -1,12 +1,12 @@
 import { useParams } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useResource } from '../hooks/useResource';
 import PostCard from "../components/PostCard";
 
 export default function Posts({ currentUser }) {
     const { id } = useParams();
 
-    const { data: posts, add, remove, update, loading, error } = useResource('posts');
+    const { data: posts, add, remove, update, loading, error, filterData } = useResource('posts');
 
     const [searchTerm, setSearchTerm] = useState("");
     const [searchBy, setSearchBy] = useState("title");
@@ -17,20 +17,28 @@ export default function Posts({ currentUser }) {
     const handleAdd = async (e) => {
         e.preventDefault();
         if (!newPost.title || !newPost.body) return;
-
-        await add(newPost);
-
+        await add({ ...newPost, userId: currentUser.id });
         setNewPost({ title: '', body: '' });
         setAddPostInput(false);
     };
 
-    const filteredPosts = posts.filter(post => {
-        if (searchBy === 'id') {
-            return post.id.toString().includes(searchTerm);
-        } else {
-            return post.title.toLowerCase().includes(searchTerm.toLowerCase());
+    useEffect(() => {
+        if (!searchTerm && searchBy !== 'myPosts') {
+            filterData(null);
         }
-    });
+        else {
+            filterData((post) => {
+                switch (searchBy) {
+                    case 'id':
+                        return post.id.toString().includes(searchTerm);
+                    case 'title':
+                        return post.title.toLowerCase().includes(searchTerm.toLowerCase());
+                    case 'myPosts':
+                        return post.userId == currentUser.id;
+                }
+            });
+        }
+    }, [searchTerm, searchBy])
 
     if (loading) return <h2>Loading posts... ⏳</h2>;
     if (error) return <h2>Error: {error.message} ⚠️</h2>;
@@ -43,6 +51,7 @@ export default function Posts({ currentUser }) {
                 <select value={searchBy} onChange={(e) => setSearchBy(e.target.value)}>
                     <option value="title">Title</option>
                     <option value="id">ID</option>
+                    <option value="myPosts">my posts</option>
                 </select>
                 <input
                     type="text"
@@ -78,7 +87,7 @@ export default function Posts({ currentUser }) {
             )}
 
             <div className="posts-list">
-                {filteredPosts.map(post => (
+                {posts.map(post => (
                     <PostCard
                         key={post.id}
                         post={post}

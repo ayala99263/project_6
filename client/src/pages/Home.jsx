@@ -1,10 +1,10 @@
 
-export default function Home({user}) {
+export default function Home({ user }) {
 
     return (
         <div>
-            <h1>Home</h1>
-            <p>HELLO {user.name} !</p>
+                <h3>Welcome, {user.name}!</h3>
+                <p>Your personal content management system is ready for use.</p>
         </div>
     )
 }
