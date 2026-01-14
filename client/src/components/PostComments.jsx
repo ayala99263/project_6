@@ -29,62 +29,59 @@ export default function PostComments({ postId, currentUser }) {
     };
 
     return (
-        <div style={{ marginTop: '15px', padding: '15px', backgroundColor: '#f8f9fa', borderTop: '1px solid #dee2e6' }}>
-            <h4 style={{ margin: '0 0 10px 0', fontSize: '1rem' }}>Comments</h4>
+        <div>
+            <h4>Comments</h4>
 
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                {comments.length === 0 && <li style={{ color: '#777' }}>No comments yet.</li>}
+            <ul>
+                {comments.length === 0 && <li>No comments yet.</li>}
 
                 {comments.map(comment => {
                     const isOwner = comment.email === currentUser.email;
 
                     return (
-                        <li key={comment.id} style={{ marginBottom: '10px', paddingBottom: '10px', borderBottom: '1px solid #eee' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                                <span style={{ fontWeight: 'bold', fontSize: '0.85rem', color: '#555' }}>
+                        <li key={comment.id}>
+                            <div>
+                                <span>
                                     {comment.email}
                                 </span>
 
                                 {isOwner && (!editingId || editingId !== comment.id) && (
-                                    <div style={{ fontSize: '0.8rem' }}>
-                                        <button onClick={() => startEdit(comment)} style={{ marginRight: '5px', color: 'blue', border: 'none', background: 'none', cursor: 'pointer' }}>Edit</button>
-                                        <button onClick={() => remove(comment.id)} style={{ color: 'red', border: 'none', background: 'none', cursor: 'pointer' }}>Delete</button>
+                                    <div>
+                                        <button onClick={() => startEdit(comment)}>Edit</button>
+                                        <button onClick={() => remove(comment.id)}>Delete</button>
                                     </div>
                                 )}
                             </div>
 
                             {editingId === comment.id ? (
-                                <div style={{ marginTop: '5px' }}>
+                                <div>
                                     <textarea
                                         value={editBody}
                                         onChange={(e) => setEditBody(e.target.value)}
-                                        style={{ width: '100%', padding: '5px' }}
                                     />
-                                    <div style={{ marginTop: '5px' }}>
+                                    <div>
                                         <button onClick={() => saveEdit(comment.id)}>Save</button>
-                                        <button onClick={() => setEditingId(null)} style={{ marginLeft: '5px' }}>Cancel</button>
+                                        <button onClick={() => setEditingId(null)}>Cancel</button>
                                     </div>
                                 </div>
                             ) : (
-                                <p style={{ margin: '5px 0', fontSize: '0.95rem' }}>{comment.body}</p>
+                                <p>{comment.body}</p>
                             )}
                         </li>
                     );
                 })}
             </ul>
 
-            <div style={{ marginTop: '15px', display: 'flex', gap: '8px' }}>
+            <div>
                 <input
                     type="text"
                     placeholder="Write a comment..."
                     value={newCommentBody}
                     onChange={(e) => setNewCommentBody(e.target.value)}
-                    style={{ flexGrow: 1, padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
                 />
                 <button
                     onClick={handleAddComment}
                     disabled={!newCommentBody}
-                    style={{ padding: '8px 15px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
                 >
                     Send
                 </button>

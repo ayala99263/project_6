@@ -70,29 +70,27 @@ export default function AlbumPhotos() {
             </button>
 
             {addPhotoMode && (
-                <form onSubmit={handleAdd} style={{ marginBottom: '20px', border: '1px solid #ccc', padding: '10px' }}>
+                <form onSubmit={handleAdd}>
                     <h3>Add New Photo</h3>
                     <input
                         type="text"
                         placeholder="Title..."
                         value={newPhoto.title}
                         onChange={(e) => setNewPhoto({ ...newPhoto, title: e.target.value })} 
-                        style={{ display: 'block', margin: '5px 0' }}
                     />
                     <input
                         type="text"
                         placeholder="URL..."
                         value={newPhoto.url}
                         onChange={(e) => setNewPhoto({ ...newPhoto, url: e.target.value })} 
-                        style={{ display: 'block', margin: '5px 0' }}
                     />
                     <button type="submit">Save New Photo</button>
                 </form>
             )}
 
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+            <div>
                 {photos && photos.map(photo => (
-                    <div key={photo.id} style={{ border: '1px solid #eee', padding: '10px', width: '200px' }}>
+                    <div key={photo.id}>
                         <p>ID: {photo.id}</p>
                         
                         {editingId === photo.id ? (
@@ -109,7 +107,7 @@ export default function AlbumPhotos() {
                                     onChange={(e) => setEditPhoto({...editPhoto, url: e.target.value})}
                                     placeholder="New URL..."
                                 />
-                                <div style={{ marginTop: '5px' }}>
+                                <div>
                                     <button onClick={() => handleSaveEdit(photo)}>Save</button>
                                     <button onClick={() => {
                                         setEditingId(null);
@@ -119,13 +117,12 @@ export default function AlbumPhotos() {
                             </>
                         ) : (
                             <>
-                                <p style={{ fontWeight: 'bold' }}>{photo.title}</p>
+                                <p>{photo.title}</p>
                                 <img 
                                     src={photo.thumbnailUrl || photo.url} 
                                     alt={photo.title} 
-                                    style={{ width: '100%', height: '150px', objectFit: 'cover' }}
                                 />
-                                <div style={{ marginTop: '10px' }}>
+                                <div>
                                     <button onClick={() => {
                                         setEditingId(photo.id);
                                         setEditPhoto({ title: "", url: "" }); 
@@ -133,7 +130,6 @@ export default function AlbumPhotos() {
                                     
                                     <button 
                                         onClick={() => remove(photo.id)} 
-                                        style={{ marginLeft: '5px', color: 'red' }}
                                     >
                                         Delete
                                     </button>

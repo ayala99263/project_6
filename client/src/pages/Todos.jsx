@@ -1,32 +1,53 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useResource } from '../hooks/useResource';
+import DataViewer from '../components/DataViewer';
 
 export default function Todos() {
     const { id } = useParams();
 
-    // קריאה להוק: "תביא לי todos ששייכים ל-userId הזה"
-    const { data: todos, add, remove, update, loading, error } = useResource('todos', { userId: id });
+    const { data: todos, add, remove, update, filterData, error, loading } = useResource('todos', { userId: id });
 
-    // --- State מקומי לניהול ה-UI בלבד ---
     const [addTodoInput, setAddTodoInput] = useState(false);
     const [newTodoTitle, setNewTodoTitle] = useState("");
+
     const [editingId, setEditingId] = useState(null);
     const [editTitle, setEditTitle] = useState("");
+
     const [sortBy, setSortBy] = useState("none");
+
     const [searchTerm, setSearchTerm] = useState("");
     const [searchBy, setSearchBy] = useState("title");
 
-    // --- פונקציות טיפול (Handlers) ---
+    useEffect(() => {
+        if (!searchTerm) {
+            filterData(null);
+        } else {
+            filterData(todo => {
+                const val = searchTerm.toLowerCase();
+                switch (searchBy) {
+                    case 'id':
+                        return todo.id.toString().includes(val);
+                    case 'title':
+                        return todo.title.toLowerCase().includes(val);
+                    case 'status':
+                        if (val === 'completed') return todo.completed;
+                        if (val === 'not completed') return !todo.completed;
+                        return false;
+                    default:
+                        return true;
+                }
+            });
+        }
+    }, [searchTerm, searchBy]);
 
     const handleAdd = async (e) => {
         e.preventDefault();
         if (!newTodoTitle) return;
-
         await add({ title: newTodoTitle, completed: false });
-
         setNewTodoTitle("");
         setAddTodoInput(false);
+        setSearchTerm("")
     };
 
     const handleSaveEdit = async (todoId) => {
@@ -35,36 +56,10 @@ export default function Todos() {
         setEditTitle("");
     };
 
-    const sortTodos = (sortBy) => {
-        setSortBy(sortBy);
-    }
+    const getSortedTodos = () => {
+        if (!sortBy || sortBy === "none") return todos;
 
-    const getFilteredAndSortedTodos = () => {
-        let filtered = todos;
-
-        // Filter by search term
-        if (searchTerm) {
-            filtered = todos.filter(todo => {
-                switch (searchBy) {
-                    case 'id':
-                        return todo.id.toString().includes(searchTerm);
-                    case 'title':
-                        return todo.title.toLowerCase().includes(searchTerm.toLowerCase());
-                    case 'status':
-                        const term = searchTerm.toLowerCase();
-                        if (term === 'completed') return todo.completed;
-                        if (term === 'not completed') return !todo.completed;
-                        return false;
-                    default:
-                        return true;
-                }
-            });
-        }
-
-
-        if (!sortBy || sortBy === "none") return filtered;
-
-        return [...filtered].sort((a, b) => {
+        return [...todos].sort((a, b) => {
             switch (sortBy) {
                 case 'completed':
                     return b.completed - a.completed;
@@ -79,9 +74,6 @@ export default function Todos() {
             }
         });
     }
-
-    if (loading) return <h2 style={{ textAlign: 'center' }}>Loading posts... ⏳</h2>;
-    if (error) return <h2 style={{ textAlign: 'center', color: 'red' }}>Error: {error.message} ⚠️</h2>;
 
     return (
         <div className="todos-container">
@@ -105,14 +97,13 @@ export default function Todos() {
 
             <div className='sort'>
                 sort by:
-                <select value={sortBy} onChange={(e) => sortTodos(e.target.value)}>
+                <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
                     <option value="none">none</option>
                     <option value="completed">completed</option>
                     <option value="not-completed">not completed</option>
                     <option value="id">id</option>
                     <option value="title">title</option>
                 </select>
-
             </div>
 
             <div className='search'>
@@ -131,48 +122,45 @@ export default function Todos() {
                 <button onClick={() => setSearchTerm("")}>Clear</button>
             </div>
 
-            <div className="list">
-                {getFilteredAndSortedTodos().map(todo => (
-                    <div key={todo.id} className="todo-item" style={{ border: '1px solid #ccc', margin: '10px', padding: '10px' }}>
+            <DataViewer loading={loading} error={error} data={todos}>
+                <div className="list">
+                    {getSortedTodos().map(todo => (
+                        <div key={todo.id} className="todo-item">
+                            <input
+                                type="checkbox"
+                                checked={todo.completed}
+                                onChange={() => update(todo.id, { completed: !todo.completed })}
+                            />
 
+                            {editingId === todo.id ? (
+                                <>
+                                    <input
+                                        type="text"
+                                        value={editTitle}
+                                        onChange={(e) => setEditTitle(e.target.value)}
+                                    />
+                                    <button onClick={() => handleSaveEdit(todo.id)}>Save</button>
+                                    <button onClick={() => setEditingId(null)}>Cancel</button>
+                                </>
+                            ) : (
+                                <>
+                                    <span>
+                                        #{todo.id} - {todo.title}
+                                    </span>
+                                    <button onClick={() => {
+                                        setEditingId(todo.id);
+                                        setEditTitle(todo.title);
+                                    }}>Edit</button>
 
-                        <input
-                            type="checkbox"
-                            checked={todo.completed}
-                            onChange={() => update(todo.id, { completed: !todo.completed })}
-                        />
-
-                        {editingId === todo.id ? (
-
-                            <>
-                                <input
-                                    type="text"
-                                    value={editTitle}
-                                    onChange={(e) => setEditTitle(e.target.value)}
-                                />
-                                <button onClick={() => handleSaveEdit(todo.id)}>Save</button>
-                                <button onClick={() => setEditingId(null)}>Cancel</button>
-                            </>
-                        ) : (
-                            // מצב תצוגה רגיל
-                            <>
-
-                                <span style={{ textDecoration: todo.completed ? 'line-through' : 'none', margin: '0 10px' }}>
-                                    #{todo.id} - {todo.title}
-                                </span>
-                                <button onClick={() => {
-                                    setEditingId(todo.id);
-                                    setEditTitle(todo.title);
-                                }}>Edit</button>
-
-                                <button onClick={() => remove(todo.id)} style={{ marginLeft: '5px', color: 'red' }}>
-                                    Delete
-                                </button>
-                            </>
-                        )}
-                    </div>
-                ))}
-            </div>
+                                    <button onClick={() => remove(todo.id)}>
+                                        Delete
+                                    </button>
+                                </>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            </DataViewer>
         </div>
     );
 }

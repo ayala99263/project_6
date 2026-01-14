@@ -84,5 +84,4 @@ export default function Login({setCurrentUser}) {
             <p>Don't have an account? <Link to="/register">Sign up</Link></p>
         </div>
     )
-
 }

@@ -1,4 +1,3 @@
-
 export default function Info({ user, setShowInfoState }) {
     return (
         <div>

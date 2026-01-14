@@ -11,7 +11,7 @@ const Navbar = ({ user, handleLogout, setShowInfo }) => {
       <Link to={`/users/${user.id}/posts`}>Posts </Link>
       <Link to={`/users/${user.id}/albums`}>Albums  </Link>
 
-      <button onClick={handleLogout} style={{ color: 'red' }}>Logout</button>
+      <button onClick={handleLogout}>Logout</button>
     </nav>
   );
 };

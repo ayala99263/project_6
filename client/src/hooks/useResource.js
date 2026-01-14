@@ -2,9 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 export const useResource = (resourceName, queryParams = {}) => {
-    // 1. originalData: מחזיק את כל המידע שהגיע מהשרת (ה"אמת")
     const [originalData, setOriginalData] = useState([]);
-    // 2. data: מחזיק את המידע שמוצג למשתמש (אחרי סינון/מיון)
     const [data, setData] = useState([]);
 
     const [loading, setLoading] = useState(false);
@@ -12,7 +10,6 @@ export const useResource = (resourceName, queryParams = {}) => {
 
     const baseUrl = `http://localhost:3000/${resourceName}`;
 
-    // --- A. פונקציה לטעינה מהשרת (תומכת בפגינציה/שרשור) ---
     const fetchData = async (newParams = {}, shouldAppend = false) => {
         setLoading(true);
         try {
@@ -20,13 +17,11 @@ export const useResource = (resourceName, queryParams = {}) => {
             const res = await axios.get(baseUrl, { params: finalParams });
 
             if (shouldAppend) {
-                // מצב Load More: מוסיפים לסוף הרשימה
                 const newData = [...originalData, ...res.data];
                 setOriginalData(newData);
-                setData(newData); // מעדכנים גם את התצוגה
-                return res.data; // מחזירים כדי שהקומפוננטה תדע אם נגמר המידע
+                setData(newData);
+                return res.data;
             } else {
-                // מצב רגיל: מחליפים את הרשימה
                 setOriginalData(res.data);
                 setData(res.data);
                 return res.data;
@@ -38,29 +33,25 @@ export const useResource = (resourceName, queryParams = {}) => {
         }
     };
 
-    // טעינה ראשונית אוטומטית
     useEffect(() => {
         if (resourceName) fetchData();
     }, [resourceName, JSON.stringify(queryParams)]);
 
-    // --- B. פונקציה לסינון מקומי (Client Side) ---
-    // הקומפוננטה שולחת פונקציית בדיקה (callback), ההוק מבצע
     const filterData = (filterFn) => {
         if (!filterFn) {
-            setData(originalData); // איפוס: מציגים את המקור
+            setData(originalData);
         } else {
-            setData(originalData.filter(filterFn)); // סינון על המקור
+            setData(originalData.filter(filterFn));
         }
     };
 
-    // --- C. פונקציות CRUD (מעדכנות את שני המצבים) ---
     const add = async (newItem) => {
         try {
             setLoading(true);
             const res = await axios.post(baseUrl, { ...newItem, ...queryParams });
             const newData = [...originalData, res.data];
             setOriginalData(newData);
-            setData(newData); // חשוב לעדכן גם את התצוגה כדי לראות את הפריט מיד
+            setData(newData);
         } catch (err) { setError(err) }
         finally {
             setLoading(false);
@@ -100,7 +91,7 @@ export const useResource = (resourceName, queryParams = {}) => {
         add,
         remove,
         update,
-        fetchData,  // לשימוש באלבומים (שרת)
-        filterData  // לשימוש בפוסטים וטודוס (מקומי)
+        fetchData,
+        filterData
     };
 };

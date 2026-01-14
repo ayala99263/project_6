@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useResource } from '../hooks/useResource';
 import PostCard from "../components/PostCard";
+import DataViewer from '../components/DataViewer';
 
 export default function Posts({ currentUser }) {
     const { id } = useParams();
@@ -20,6 +21,7 @@ export default function Posts({ currentUser }) {
         await add({ ...newPost, userId: currentUser.id });
         setNewPost({ title: '', body: '' });
         setAddPostInput(false);
+        setSearchTerm("")
     };
 
     useEffect(() => {
@@ -36,12 +38,11 @@ export default function Posts({ currentUser }) {
                     case 'myPosts':
                         return post.userId == currentUser.id;
                 }
+
             });
         }
     }, [searchTerm, searchBy])
 
-    if (loading) return <h2>Loading posts... ⏳</h2>;
-    if (error) return <h2>Error: {error.message} ⚠️</h2>;
 
     return (
         <div className="posts-page">
@@ -59,6 +60,7 @@ export default function Posts({ currentUser }) {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
+                <button onClick={() => setSearchTerm("")}>Clear</button>
             </div>
 
             <button onClick={() => setAddPostInput(!addPostInput)}>
@@ -86,17 +88,20 @@ export default function Posts({ currentUser }) {
                 </form>
             )}
 
-            <div className="posts-list">
-                {posts.map(post => (
-                    <PostCard
-                        key={post.id}
-                        post={post}
-                        deletePost={() => remove(post.id)}
-                        updatePost={(updatedFields) => update(post.id, updatedFields)}
-                        currentUser={currentUser}
-                    />
-                ))}
-            </div>
+            <DataViewer loading={loading} error={error} data={posts}>
+
+                <div className="posts-list">
+                    {posts.map(post => (
+                        <PostCard
+                            key={post.id}
+                            post={post}
+                            deletePost={() => remove(post.id)}
+                            updatePost={(updatedFields) => update(post.id, updatedFields)}
+                            currentUser={currentUser}
+                        />
+                    ))}
+                </div>
+            </DataViewer>
         </div>
     )
 }
