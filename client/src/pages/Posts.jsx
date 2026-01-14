@@ -6,7 +6,7 @@ import PostCard from "../components/PostCard";
 export default function Posts({ currentUser }) {
     const { id } = useParams();
 
-    const { data: posts, add, remove, update, loading, error } = useResource('posts', { userId: id });
+    const { data: posts, add, remove, update, loading, error } = useResource('posts');
 
     const [searchTerm, setSearchTerm] = useState("");
     const [searchBy, setSearchBy] = useState("title");
