@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import "./Auth.css";
 
 export default function Login({setCurrentUser}) {
 
@@ -57,31 +58,44 @@ export default function Login({setCurrentUser}) {
     }
 
     return (
-        <div className="login">
-            <h1>Login</h1>
-            <form onSubmit={handleSubmit}>
-                <input
-                    name="username"
-                    type="text"
-                    placeholder="Username"
-                    onChange={handleChange}
-                    value={formData.username}
-                />
-                <input
-                    name="password"
-                    type="password"
-                    placeholder="Password"
-                    onChange={handleChange}
-                    value={formData.password}
-                />
-                <button type="submit" disabled={isLoading}>
-                    {isLoading ? "loging in..." : "login"}
-                </button>
-            </form>
-            <div>
-                {message && <p className="status-message">{message}</p>}
+        <div className="auth-container">
+            <div className="auth-side">
+                <div className="auth-side-content">
+                    <h2>Welcome Back</h2>
+                    <p>Enter your credentials to access your account</p>
+                </div>
             </div>
-            <p>Don't have an account? <Link to="/register">Sign up</Link></p>
+            <div className="auth-main">
+                <div className="auth-card">
+                    <h1>Login</h1>
+                    <p className="auth-subtitle">Sign in to continue</p>
+                    <form className="auth-form" onSubmit={handleSubmit}>
+                        <input
+                            className="auth-input"
+                            name="username"
+                            type="text"
+                            placeholder="Username"
+                            onChange={handleChange}
+                            value={formData.username}
+                        />
+                        <input
+                            className="auth-input"
+                            name="password"
+                            type="password"
+                            placeholder="Password"
+                            onChange={handleChange}
+                            value={formData.password}
+                        />
+                        <button className="auth-button" type="submit" disabled={isLoading}>
+                            {isLoading ? "Logging in..." : "Login"}
+                        </button>
+                    </form>
+                    <div>
+                        {message && <p className="status-message">{message}</p>}
+                    </div>
+                    <p className="auth-footer">Don't have an account? <Link to="/register">Sign up</Link></p>
+                </div>
+            </div>
         </div>
     )
 }

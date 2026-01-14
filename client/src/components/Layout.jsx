@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { Outlet, useNavigate, Link } from 'react-router-dom';
 import Navbar from './Navbar';
 import Info from './Info'
+import '../pages/Home.css';
 
 export default function Layout({ currentUser, setCurrentUser }) {
     const navigate = useNavigate();
@@ -26,10 +27,15 @@ export default function Layout({ currentUser, setCurrentUser }) {
 
     if (!currentUser) return null;
 
+    const firstLetter = currentUser.name.charAt(0).toUpperCase();
+
     return (
         <div className="app-layout">
 
-            <Link to={"/"}>🧒 {currentUser.name}</Link>
+            <Link to={"/"} className="layout-profile-link">
+                <div className="layout-user-avatar">{firstLetter}</div>
+                <span>{currentUser.name}</span>
+            </Link>
 
             <Navbar user={currentUser} handleLogout={handleLogout} setShowInfo={setShowInfo} />
 

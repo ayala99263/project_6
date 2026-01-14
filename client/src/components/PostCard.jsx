@@ -1,12 +1,26 @@
 import axios from 'axios';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PostComments from './PostComments';
+import './PostCard.css';
 
 export default function PostCard({ post, deletePost, updatePost, currentUser }) {
     const [showPost, setShowPost] = useState(false);
     const [showComments, setShowComments] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editData, setEditData] = useState({ title: post.title, body: post.body });
+    const [postAuthor, setPostAuthor] = useState(null);
+
+    useEffect(() => {
+        const fetchAuthor = async () => {
+            try {
+                const res = await axios.get(`http://localhost:3000/users/${post.userId}`);
+                setPostAuthor(res.data);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        fetchAuthor();
+    }, [post.userId]);
 
     const handleSave = () => {
         updatePost(editData);
@@ -26,25 +40,36 @@ export default function PostCard({ post, deletePost, updatePost, currentUser }) 
         }
     }
 
-    return (
-        <div>
+    const getAvatarColor = (name) => {
+        const colors = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#06b6d4'];
+        const index = name.charCodeAt(0) % colors.length;
+        return colors[index];
+    };
 
-            <div
-                onClick={() => setShowPost(!showPost)}
-            >
-                <h3>
-                    #{post.id} - {post.title}
-                </h3>
-                <span>
-                    {showPost ? '−' : '+'}
-                </span>
+    const firstLetter = postAuthor?.name?.charAt(0).toUpperCase() || '?';
+
+    return (
+        <div className="post-card">
+            <div className="post-header" onClick={() => setShowPost(!showPost)}>
+                <span className="post-id">#{post.id}</span>
+                <div className="post-header-content">
+                    {postAuthor && (
+                        <div className="post-author">
+                            <div className="post-avatar" style={{ background: getAvatarColor(postAuthor.name) }}>
+                                {firstLetter}
+                            </div>
+                            <span className="post-author-name">{postAuthor.name}</span>
+                        </div>
+                    )}
+                    <h3 className="post-title">{post.title}</h3>
+                </div>
+                <span className="post-toggle">{showPost ? '−' : '+'}</span>
             </div>
 
             {showPost && (
-                <div>
-
+                <div className="post-content">
                     {isEditing ? (
-                        <div>
+                        <div className="post-edit-form">
                             <input
                                 type="text"
                                 value={editData.title}
@@ -54,27 +79,28 @@ export default function PostCard({ post, deletePost, updatePost, currentUser }) 
                                 value={editData.body}
                                 onChange={(e) => setEditData({ ...editData, body: e.target.value })}
                             />
-                            <div>
-                                <button onClick={handleSave}>Save</button>
-                                <button onClick={() => setIsEditing(false)}>Cancel</button>
+                            <div className="post-actions">
+                                <button className="post-btn save" onClick={handleSave}>Save</button>
+                                <button className="post-btn cancel" onClick={() => setIsEditing(false)}>Cancel</button>
                             </div>
                         </div>
                     ) : (
                         <>
-                            <p>{post.body}</p>
+                            <p className="post-body">{post.body}</p>
 
-                            <div>
-                                {post.userId == currentUser.id && (<>
-                                    <button onClick={() => setIsEditing(true)}>Edit</button>
-                                    <button onClick={handleDelete}>Delete</button>                                </>)}
-                                <button
-                                    onClick={() => setShowComments(!showComments)}
-                                >
+                            <div className="post-actions">
+                                {post.userId == currentUser.id && (
+                                    <>
+                                        <button className="post-btn edit" onClick={() => setIsEditing(true)}>Edit</button>
+                                        <button className="post-btn delete" onClick={handleDelete}>Delete</button>
+                                    </>
+                                )}
+                                <button className="post-btn comments" onClick={() => setShowComments(!showComments)}>
                                     {showComments ? 'Hide Comments' : 'Show Comments'}
                                 </button>
-
-                                {showComments && <PostComments postId={post.id} currentUser={currentUser} />}
                             </div>
+
+                            {showComments && <PostComments postId={post.id} currentUser={currentUser} />}
                         </>
                     )}
                 </div>

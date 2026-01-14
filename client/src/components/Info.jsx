@@ -1,19 +1,58 @@
+import '../pages/Home.css';
+
 export default function Info({ user, setShowInfoState }) {
+    const firstLetter = user.name.charAt(0).toUpperCase();
+    
     return (
-        <div>
-            <button onClick={() => setShowInfoState(false)}>X</button>
-            <h2>Info</h2>
-            <p>Name: {user.name}</p>
-            <p>Email: {user.email}</p>
-            <p>Phone: {user.phone}</p>
-            <p>address:</p>
-            <p>street: {user.address.street}</p>
-            <p>city: {user.address.city}</p>
-            <p>number: {user.address.number}</p>
-            <p>company:</p>
-            <p>name: {user.company.name}</p>
-            <p>catchPhrase: {user.company.catchPhrase}</p>
-            <p>bs: {user.company.bs}</p>
+        <div className="info-overlay" onClick={() => setShowInfoState(false)}>
+            <div className="info-modal" onClick={(e) => e.stopPropagation()}>
+                <button className="info-close" onClick={() => setShowInfoState(false)}>✕</button>
+                
+                <div className="info-header">
+                    <div className="info-user-avatar">{firstLetter}</div>
+                    <div>
+                        <h2>{user.name}</h2>
+                        <p className="info-subtitle">User Information</p>
+                    </div>
+                </div>
+
+                <div className="info-content">
+                    <div className="info-grid">
+                        <div className="info-card">
+                            <span className="info-icon">✉</span>
+                            <div className="info-card-content">
+                                <div className="info-card-label">Email</div>
+                                <div className="info-card-value">{user.email}</div>
+                            </div>
+                        </div>
+
+                        <div className="info-card">
+                            <span className="info-icon">☎</span>
+                            <div className="info-card-content">
+                                <div className="info-card-label">Phone</div>
+                                <div className="info-card-value">{user.phone}</div>
+                            </div>
+                        </div>
+
+                        <div className="info-card">
+                            <span className="info-icon">🗺️</span>
+                            <div className="info-card-content">
+                                <div className="info-card-label">Address</div>
+                                <div className="info-card-value">{user.address.street} {user.address.number}, {user.address.city}</div>
+                            </div>
+                        </div>
+
+                        <div className="info-card">
+                            <span className="info-icon">🏢</span>
+                            <div className="info-card-content">
+                                <div className="info-card-label">Company</div>
+                                <div className="info-card-value">{user.company.name}</div>
+                                <div className="info-card-subtitle">{user.company.catchPhrase}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

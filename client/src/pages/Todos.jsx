@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useResource } from '../hooks/useResource';
 import DataViewer from '../components/DataViewer';
+import './Todos.css';
 
 export default function Todos() {
     const { id } = useParams();
@@ -77,57 +78,64 @@ export default function Todos() {
 
     return (
         <div className="todos-container">
-            <h1>Todos List</h1>
+            <div className="todos-header">
+                <button 
+                    className={`add-todo-btn ${addTodoInput ? 'cancel' : ''}`}
+                    onClick={() => setAddTodoInput(!addTodoInput)}
+                >
+                    {addTodoInput ? 'Cancel' : 'Add New Todo'}
+                </button>
 
-            <button onClick={() => setAddTodoInput(!addTodoInput)}>
-                {addTodoInput ? 'Cancel Add' : 'Add New Todo'}
-            </button>
-
-            {addTodoInput && (
-                <form onSubmit={handleAdd}>
-                    <input
-                        type="text"
-                        placeholder="Title..."
-                        value={newTodoTitle}
-                        onChange={(e) => setNewTodoTitle(e.target.value)}
-                    />
-                    <button type="submit">Save</button>
-                </form>
-            )}
-
-            <div className='sort'>
-                sort by:
-                <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                    <option value="none">none</option>
-                    <option value="completed">completed</option>
-                    <option value="not-completed">not completed</option>
-                    <option value="id">id</option>
-                    <option value="title">title</option>
-                </select>
+                {addTodoInput && (
+                    <form className="add-todo-form" onSubmit={handleAdd}>
+                        <input
+                            type="text"
+                            placeholder="Enter todo title..."
+                            value={newTodoTitle}
+                            onChange={(e) => setNewTodoTitle(e.target.value)}
+                        />
+                        <button type="submit">Save</button>
+                    </form>
+                )}
             </div>
 
-            <div className='search'>
-                Search by:
-                <select value={searchBy} onChange={(e) => setSearchBy(e.target.value)}>
-                    <option value="title">Title</option>
-                    <option value="id">ID</option>
-                    <option value="status">Status</option>
-                </select>
-                <input
-                    type="text"
-                    placeholder={`Search by ${searchBy}...`}
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <button onClick={() => setSearchTerm("")}>Clear</button>
+            <div className="todos-controls">
+                <div className="control-group">
+                    <label>Sort by:</label>
+                    <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                        <option value="none">None</option>
+                        <option value="completed">Completed</option>
+                        <option value="not-completed">Not Completed</option>
+                        <option value="id">ID</option>
+                        <option value="title">Title</option>
+                    </select>
+                </div>
+
+                <div className="control-group">
+                    <label>Search by:</label>
+                    <select value={searchBy} onChange={(e) => setSearchBy(e.target.value)}>
+                        <option value="title">Title</option>
+                        <option value="id">ID</option>
+                        <option value="status">Status</option>
+                    </select>
+                    <input
+                        type="text"
+                        placeholder={`Search by ${searchBy}...`}
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <button className="clear-btn" onClick={() => setSearchTerm("")}>Clear</button>
+                </div>
             </div>
 
             <DataViewer loading={loading} error={error} data={todos}>
-                <div className="list">
+                <div className="todos-list">
                     {getSortedTodos().map(todo => (
                         <div key={todo.id} className="todo-item">
+                            <span className="todo-id">#{todo.id}</span>
                             <input
                                 type="checkbox"
+                                className="todo-checkbox"
                                 checked={todo.completed}
                                 onChange={() => update(todo.id, { completed: !todo.completed })}
                             />
@@ -136,25 +144,27 @@ export default function Todos() {
                                 <>
                                     <input
                                         type="text"
+                                        className="todo-edit-input"
                                         value={editTitle}
                                         onChange={(e) => setEditTitle(e.target.value)}
                                     />
-                                    <button onClick={() => handleSaveEdit(todo.id)}>Save</button>
-                                    <button onClick={() => setEditingId(null)}>Cancel</button>
+                                    <div className="todo-actions">
+                                        <button className="todo-btn save" onClick={() => handleSaveEdit(todo.id)}>Save</button>
+                                        <button className="todo-btn cancel" onClick={() => setEditingId(null)}>Cancel</button>
+                                    </div>
                                 </>
                             ) : (
                                 <>
-                                    <span>
-                                        #{todo.id} - {todo.title}
+                                    <span className={`todo-content ${todo.completed ? 'completed' : ''}`}>
+                                        {todo.title}
                                     </span>
-                                    <button onClick={() => {
-                                        setEditingId(todo.id);
-                                        setEditTitle(todo.title);
-                                    }}>Edit</button>
-
-                                    <button onClick={() => remove(todo.id)}>
-                                        Delete
-                                    </button>
+                                    <div className="todo-actions">
+                                        <button className="todo-btn edit" onClick={() => {
+                                            setEditingId(todo.id);
+                                            setEditTitle(todo.title);
+                                        }}>Edit</button>
+                                        <button className="todo-btn delete" onClick={() => remove(todo.id)}>Delete</button>
+                                    </div>
                                 </>
                             )}
                         </div>

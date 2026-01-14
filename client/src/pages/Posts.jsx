@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useResource } from '../hooks/useResource';
 import PostCard from "../components/PostCard";
 import DataViewer from '../components/DataViewer';
+import './Posts.css';
 
 export default function Posts({ currentUser }) {
     const { id } = useParams();
@@ -46,13 +47,12 @@ export default function Posts({ currentUser }) {
 
     return (
         <div className="posts-page">
-            <h1>Posts</h1>
-
-            <div>
+            <div className="posts-controls">
+                <label>Search by:</label>
                 <select value={searchBy} onChange={(e) => setSearchBy(e.target.value)}>
                     <option value="title">Title</option>
                     <option value="id">ID</option>
-                    <option value="myPosts">my posts</option>
+                    <option value="myPosts">My Posts</option>
                 </select>
                 <input
                     type="text"
@@ -60,36 +60,36 @@ export default function Posts({ currentUser }) {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
-                <button onClick={() => setSearchTerm("")}>Clear</button>
+                <button className="clear-btn" onClick={() => setSearchTerm("")}>Clear</button>
             </div>
 
-            <button onClick={() => setAddPostInput(!addPostInput)}>
-                {addPostInput ? 'Cancel Add' : 'Add New Post'}
-            </button>
+            <div className="posts-header">
+                <button 
+                    className={`add-post-btn ${addPostInput ? 'cancel' : ''}`}
+                    onClick={() => setAddPostInput(!addPostInput)}
+                >
+                    {addPostInput ? 'Cancel' : 'Add New Post'}
+                </button>
 
-            {addPostInput && (
-                <form onSubmit={handleAdd}>
-                    <div>
+                {addPostInput && (
+                    <form className="add-post-form" onSubmit={handleAdd}>
                         <input
                             type="text"
-                            placeholder="Title..."
+                            placeholder="Post title..."
                             value={newPost.title}
                             onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
                         />
-                    </div>
-                    <div>
                         <textarea
-                            placeholder="Body content..."
+                            placeholder="Post content..."
                             value={newPost.body}
                             onChange={(e) => setNewPost({ ...newPost, body: e.target.value })}
                         />
-                    </div>
-                    <button type="submit">Save Post</button>
-                </form>
-            )}
+                        <button type="submit">Save Post</button>
+                    </form>
+                )}
+            </div>
 
             <DataViewer loading={loading} error={error} data={posts}>
-
                 <div className="posts-list">
                     {posts.map(post => (
                         <PostCard
