@@ -1,12 +1,12 @@
-.posts-page {
-    max-width: 1200px;
+.albums-page {
+    max-width: 1600px;
     margin: 0 auto;
     padding: 16px;
     background-color: #fafbfc;
     min-height: calc(100vh - 129px);
 }
 
-.posts-header {
+.albums-header {
     background-color: white;
     border-radius: 12px;
     padding: 24px;
@@ -14,7 +14,7 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.add-post-btn {
+.add-album-btn {
     padding: 12px 24px;
     background-color: #3b82f6;
     color: white;
@@ -26,47 +26,39 @@
     transition: background-color 0.2s;
 }
 
-.add-post-btn:hover {
+.add-album-btn:hover {
     background-color: #2563eb;
 }
 
-.add-post-btn.cancel {
+.add-album-btn.cancel {
     background-color: #64748b;
 }
 
-.add-post-btn.cancel:hover {
+.add-album-btn.cancel:hover {
     background-color: #475569;
 }
 
-.add-post-form {
+.add-album-form {
     margin-top: 16px;
     display: flex;
-    flex-direction: column;
     gap: 12px;
 }
 
-.add-post-form input,
-.add-post-form textarea {
+.add-album-form input {
+    flex: 1;
     padding: 12px 16px;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     font-size: 15px;
     outline: none;
     transition: border-color 0.2s;
-    font-family: inherit;
 }
 
-.add-post-form input:focus,
-.add-post-form textarea:focus {
+.add-album-form input:focus {
     border-color: #3b82f6;
 }
 
-.add-post-form textarea {
-    min-height: 120px;
-    resize: vertical;
-}
-
-.add-post-form button {
+.add-album-form button {
     padding: 12px 24px;
     background-color: #10b981;
     color: white;
@@ -76,14 +68,13 @@
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.2s;
-    align-self: flex-start;
 }
 
-.add-post-form button:hover {
+.add-album-form button:hover {
     background-color: #059669;
 }
 
-.posts-controls {
+.albums-controls {
     background-color: white;
     border-radius: 12px;
     padding: 24px;
@@ -95,14 +86,14 @@
     flex-wrap: wrap;
 }
 
-.posts-controls label {
+.albums-controls label {
     color: #64748b;
     font-size: 14px;
     font-weight: 500;
 }
 
-.posts-controls select,
-.posts-controls input {
+.albums-controls select,
+.albums-controls input {
     padding: 10px 14px;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
@@ -111,35 +102,71 @@
     transition: border-color 0.2s;
 }
 
-.posts-controls select:focus,
-.posts-controls input:focus {
+.albums-controls select:focus,
+.albums-controls input:focus {
     border-color: #3b82f6;
 }
 
-.posts-controls input {
+.albums-controls input {
     min-width: 250px;
     flex: 1;
 }
 
-.clear-btn {
-    padding: 10px 20px;
-    background-color: #f1f5f9;
-    color: #64748b;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
+.albums-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.album-card {
+    background-color: white;
+    border-radius: 12px;
+    padding: 48px 40px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     transition: all 0.2s;
-}
-
-.clear-btn:hover {
-    background-color: #e2e8f0;
-    color: #1e293b;
-}
-
-.posts-list {
+    text-decoration: none;
+    color: inherit;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
+    position: relative;
+    min-height: 280px;
+}
+
+.album-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.album-id {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 600;
+    background-color: #f1f5f9;
+    padding: 6px 10px;
+    border-radius: 4px;
+}
+
+.album-title {
+    color: #1e293b;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.4;
+    margin: 0;
+    margin-top: 8px;
+}
+
+.album-icon {
+    font-size: 96px;
+    text-align: center;
+    margin: 32px 0 20px 0;
+}
+
+@media (max-width: 768px) {
+    .albums-grid {
+        grid-template-columns: 1fr;
+    }
 }

@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
-import {useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { useResource } from '../hooks/useResource';
 import DataViewer from '../components/DataViewer';
+import './AlbumPhotos.css';
 
 export default function AlbumPhotos() {
     const { albumId } = useParams();
@@ -58,10 +59,9 @@ export default function AlbumPhotos() {
         const newPhotos = await fetchData({
             _start: currentCount,
             _limit: limit
-        }, true); // true אומר ל-Hook להוסיף את התמונות למערך הקיים
+        }, true);
 
         if (newPhotos) {
-            // אם השרת החזיר פחות תמונות מהמגבלה (5), סימן שנגמר המידע
             if (newPhotos.length < limit) {
                 setHasMore(false);
             }
@@ -71,79 +71,91 @@ export default function AlbumPhotos() {
     };
 
     return (
-        <div>
-            <h1>{albumTitle}</h1>
+        <div className="album-photos-page">
+            <div className="album-title-header">
+                <span className="album-icon-small">📁</span>
+                <h1 className="album-photos-title">{albumTitle}</h1>
+            </div>
 
-            <button onClick={() => setAddPhotoMode(!addPhotoMode)}>
-                {addPhotoMode ? 'Cancel Add' : 'Add New Photo'}
-            </button>
+            <div className="photos-header">
+                <button 
+                    className={`add-photo-btn ${addPhotoMode ? 'cancel' : ''}`}
+                    onClick={() => setAddPhotoMode(!addPhotoMode)}
+                >
+                    {addPhotoMode ? 'Cancel' : 'Add New Photo'}
+                </button>
 
-            {addPhotoMode && (
-                <form onSubmit={handleAdd}>
-                    <h3>Add New Photo</h3>
-                    <input
-                        type="text"
-                        placeholder="Title..."
-                        value={newPhoto.title}
-                        onChange={(e) => setNewPhoto({ ...newPhoto, title: e.target.value })}
-                    />
-                    <input
-                        type="text"
-                        placeholder="URL..."
-                        value={newPhoto.url}
-                        onChange={(e) => setNewPhoto({ ...newPhoto, url: e.target.value })}
-                    />
-                    <button type="submit">Save New Photo</button>
-                </form>
-            )}
+                {addPhotoMode && (
+                    <form className="add-photo-form" onSubmit={handleAdd}>
+                        <h3>Add New Photo</h3>
+                        <input
+                            type="text"
+                            placeholder="Enter photo title..."
+                            value={newPhoto.title}
+                            onChange={(e) => setNewPhoto({ ...newPhoto, title: e.target.value })}
+                        />
+                        <input
+                            type="text"
+                            placeholder="Enter image URL..."
+                            value={newPhoto.url}
+                            onChange={(e) => setNewPhoto({ ...newPhoto, url: e.target.value })}
+                        />
+                        <button type="submit">Save Photo</button>
+                    </form>
+                )}
+            </div>
 
             <DataViewer loading={loading} error={error} data={photos}>
-                <div>
+                <div className="photos-grid">
                     {photos && photos.map(photo => (
-                        <div key={photo.id} style={{ borderBottom: '1px solid #ccc', padding: '10px' }}>
-                            <p>ID: {photo.id}</p>
-
-                            {editingId === photo.id ? (
-                                <>
-                                    <input
-                                        type="text"
-                                        value={editPhoto.title}
-                                        onChange={(e) => setEditPhoto({ ...editPhoto, title: e.target.value })}
-                                        placeholder={photo.title}
-                                    />
-                                    <input
-                                        type="text"
-                                        value={editPhoto.url}
-                                        onChange={(e) => setEditPhoto({ ...editPhoto, url: e.target.value })}
-                                        placeholder="New URL..."
-                                    />
-                                    <div>
-                                        <button onClick={() => handleSaveEdit(photo)}>Save</button>
-                                        <button onClick={() => { setEditingId(null); setEditPhoto({ title: "", url: "" }); }}>Cancel</button>
+                        <div key={photo.id} className="photo-card">
+                            <div className="photo-image-container">
+                                <span className="photo-id">#{photo.id}</span>
+                                <img src={photo.url} alt={photo.title} className="photo-image" />
+                                {editingId === photo.id && (
+                                    <div className="photo-edit-overlay">
+                                        <div className="photo-edit-form">
+                                            <input
+                                                type="text"
+                                                value={editPhoto.title}
+                                                onChange={(e) => setEditPhoto({ ...editPhoto, title: e.target.value })}
+                                                placeholder={photo.title}
+                                            />
+                                            <input
+                                                type="text"
+                                                value={editPhoto.url}
+                                                onChange={(e) => setEditPhoto({ ...editPhoto, url: e.target.value })}
+                                                placeholder="New URL..."
+                                            />
+                                            <div className="photo-actions">
+                                                <button className="photo-btn save" onClick={() => handleSaveEdit(photo)}>Save</button>
+                                                <button className="photo-btn cancel" onClick={() => { setEditingId(null); setEditPhoto({ title: "", url: "" }); }}>Cancel</button>
+                                            </div>
+                                        </div>
                                     </div>
-                                </>
-                            ) : (
-                                <>
-                                    <p>{photo.title}</p>
-                                    <img src={photo.thumbnailUrl || photo.url} alt={photo.title} style={{ width: '100px' }} />
-                                    <div>
-                                        <button onClick={() => { setEditingId(photo.id); setEditPhoto({ title: "", url: "" }); }}>Edit</button>
-                                        <button onClick={() => remove(photo.id)}>Delete</button>
-                                    </div>
-                                </>
-                            )}
+                                )}
+                            </div>
+                            <div className="photo-content">
+                                <p className="photo-title">{photo.title}</p>
+                                <div className="photo-actions">
+                                    <button className="photo-btn edit" onClick={() => { setEditingId(photo.id); setEditPhoto({ title: "", url: "" }); }}>Edit</button>
+                                    <button className="photo-btn delete" onClick={() => remove(photo.id)}>Delete</button>
+                                </div>
+                            </div>
                         </div>
                     ))}
                 </div>
             </DataViewer>
 
-            {hasMore ? (
-                <button onClick={loadMore} className="load-more-btn" style={{ marginTop: '20px', padding: '10px' }}>
-                    Load More Photos
-                </button>
-            ) : (
-                <p style={{ color: 'gray', marginTop: '20px' }}>No more photos to show</p>
-            )}
+            <div className="load-more-container">
+                {hasMore ? (
+                    <button onClick={loadMore} className="load-more-btn">
+                        Load More Photos
+                    </button>
+                ) : (
+                    <p className="no-more-photos">No more photos to show</p>
+                )}
+            </div>
         </div>
     );
 }

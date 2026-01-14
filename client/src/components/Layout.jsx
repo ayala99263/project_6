@@ -9,6 +9,12 @@ export default function Layout({ currentUser, setCurrentUser }) {
     const navigate = useNavigate();
     const [showInfoState, setShowInfoState] = React.useState(false);
 
+    const getAvatarColor = (name) => {
+        const colors = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#06b6d4'];
+        const index = name.charCodeAt(0) % colors.length;
+        return colors[index];
+    };
+
     useEffect(() => {
         if (!currentUser) {
             navigate('/');
@@ -33,7 +39,7 @@ export default function Layout({ currentUser, setCurrentUser }) {
         <div className="app-layout">
 
             <Link to={"/"} className="layout-profile-link">
-                <div className="layout-user-avatar">{firstLetter}</div>
+                <div className="layout-user-avatar" style={{ background: getAvatarColor(currentUser.name) }}>{firstLetter}</div>
                 <span>{currentUser.name}</span>
             </Link>
 

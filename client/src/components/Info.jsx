@@ -1,6 +1,12 @@
 import '../pages/Home.css';
 
 export default function Info({ user, setShowInfoState }) {
+    const getAvatarColor = (name) => {
+        const colors = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#06b6d4'];
+        const index = name.charCodeAt(0) % colors.length;
+        return colors[index];
+    };
+
     const firstLetter = user.name.charAt(0).toUpperCase();
     
     return (
@@ -9,7 +15,7 @@ export default function Info({ user, setShowInfoState }) {
                 <button className="info-close" onClick={() => setShowInfoState(false)}>✕</button>
                 
                 <div className="info-header">
-                    <div className="info-user-avatar">{firstLetter}</div>
+                    <div className="info-user-avatar" style={{ background: getAvatarColor(user.name) }}>{firstLetter}</div>
                     <div>
                         <h2>{user.name}</h2>
                         <p className="info-subtitle">User Information</p>

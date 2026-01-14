@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useResource } from '../hooks/useResource';
 import DataViewer from '../components/DataViewer';
+import './Albums.css';
 
 export default function Albums() {
     const { id } = useParams();
@@ -34,25 +35,9 @@ export default function Albums() {
     }, [searchTerm, searchBy]);
 
     return (
-        <div>
-            <h1>Albums List</h1>
-
-            <button onClick={() => setaddAlbumInput(!addAlbumInput)}>
-                {addAlbumInput ? 'Cancel Add' : 'Add New Album'}
-            </button>
-
-            {addAlbumInput && (
-                <form onSubmit={handleAdd}>
-                    <input
-                        type="text"
-                        placeholder="Title..."
-                        value={newAlbumTitle}
-                        onChange={(e) => setnewAlbumTitle(e.target.value)}
-                    />
-                    <button type="submit">Save</button>
-                </form>
-            )}
-            <div>
+        <div className="albums-page">
+            <div className="albums-controls">
+                <label>Search by:</label>
                 <select value={searchBy} onChange={(e) => setSearchBy(e.target.value)}>
                     <option value="title">Title</option>
                     <option value="id">ID</option>
@@ -65,14 +50,40 @@ export default function Albums() {
                 />
             </div>
 
+            <div className="albums-header">
+                <button 
+                    className={`add-album-btn ${addAlbumInput ? 'cancel' : ''}`}
+                    onClick={() => setaddAlbumInput(!addAlbumInput)}
+                >
+                    {addAlbumInput ? 'Cancel' : 'Add New Album'}
+                </button>
+
+                {addAlbumInput && (
+                    <form className="add-album-form" onSubmit={handleAdd}>
+                        <input
+                            type="text"
+                            placeholder="Enter album title..."
+                            value={newAlbumTitle}
+                            onChange={(e) => setnewAlbumTitle(e.target.value)}
+                        />
+                        <button type="submit">Save</button>
+                    </form>
+                )}
+            </div>
+
             <DataViewer loading={loading} error={error} data={albums}>
                 <div className="albums-grid">
                     {albums.map(album => (
-                        <div key={album.id}>
-                            <p>{album.id}</p>
-                            <Link to={`/users/${id}/albums/${album.id}/photos`}
-                                state={{ albumTitle: album.title }} >{album.title}</Link>
-                        </div>
+                        <Link 
+                            key={album.id}
+                            to={`/users/${id}/albums/${album.id}/photos`}
+                            state={{ albumTitle: album.title }}
+                            className="album-card"
+                        >
+                            <span className="album-id">#{album.id}</span>
+                            <div className="album-icon">📁</div>
+                            <h3 className="album-title">{album.title}</h3>
+                        </Link>
                     ))}
                 </div>
             </DataViewer>

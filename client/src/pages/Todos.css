@@ -1,7 +1,7 @@
 .todos-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 32px;
+    padding: 16px;
     background-color: #fafbfc;
     min-height: calc(100vh - 129px);
 }

@@ -78,27 +78,6 @@ export default function Todos() {
 
     return (
         <div className="todos-container">
-            <div className="todos-header">
-                <button 
-                    className={`add-todo-btn ${addTodoInput ? 'cancel' : ''}`}
-                    onClick={() => setAddTodoInput(!addTodoInput)}
-                >
-                    {addTodoInput ? 'Cancel' : 'Add New Todo'}
-                </button>
-
-                {addTodoInput && (
-                    <form className="add-todo-form" onSubmit={handleAdd}>
-                        <input
-                            type="text"
-                            placeholder="Enter todo title..."
-                            value={newTodoTitle}
-                            onChange={(e) => setNewTodoTitle(e.target.value)}
-                        />
-                        <button type="submit">Save</button>
-                    </form>
-                )}
-            </div>
-
             <div className="todos-controls">
                 <div className="control-group">
                     <label>Sort by:</label>
@@ -126,6 +105,27 @@ export default function Todos() {
                     />
                     <button className="clear-btn" onClick={() => setSearchTerm("")}>Clear</button>
                 </div>
+            </div>
+
+            <div className="todos-header">
+                <button 
+                    className={`add-todo-btn ${addTodoInput ? 'cancel' : ''}`}
+                    onClick={() => setAddTodoInput(!addTodoInput)}
+                >
+                    {addTodoInput ? 'Cancel' : 'Add New Todo'}
+                </button>
+
+                {addTodoInput && (
+                    <form className="add-todo-form" onSubmit={handleAdd}>
+                        <input
+                            type="text"
+                            placeholder="Enter todo title..."
+                            value={newTodoTitle}
+                            onChange={(e) => setNewTodoTitle(e.target.value)}
+                        />
+                        <button type="submit">Save</button>
+                    </form>
+                )}
             </div>
 
             <DataViewer loading={loading} error={error} data={todos}>
