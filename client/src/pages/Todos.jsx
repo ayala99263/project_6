@@ -6,7 +6,7 @@ export default function Todos() {
     const { id } = useParams();
 
     // קריאה להוק: "תביא לי todos ששייכים ל-userId הזה"
-    const { data: todos, add, remove, update } = useResource('todos', { userId: id });
+    const { data: todos, add, remove, update, loading, error } = useResource('todos', { userId: id });
 
     // --- State מקומי לניהול ה-UI בלבד ---
     const [addTodoInput, setAddTodoInput] = useState(false);
@@ -79,6 +79,9 @@ export default function Todos() {
             }
         });
     }
+
+    if (loading) return <h2 style={{ textAlign: 'center' }}>Loading posts... ⏳</h2>;
+    if (error) return <h2 style={{ textAlign: 'center', color: 'red' }}>Error: {error.message} ⚠️</h2>;
 
     return (
         <div className="todos-container">

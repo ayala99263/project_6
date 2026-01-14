@@ -57,11 +57,9 @@ export default function AlbumPhotos() {
 
             {photos && photos.map(photo => (
                 <div key={photo.id}>
-                    <p>{photo.id}</p>
-                    <p>{photo.title}</p>
+                    <p>#{photo.id} - {photo.title}</p>
                     <img src={photo.url} alt={photo.title} />
                     <button onClick={() => remove(photo.id)}>Delete</button>
-
                 </div>
             ))}
         </div>

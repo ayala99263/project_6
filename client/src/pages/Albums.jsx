@@ -39,8 +39,7 @@ export default function Albums() {
             )}
             {albums && albums.map(album => (
                 <div key={album.id}>
-                    <p>{album.id}</p>
-                    <Link to={`/users/${id}/albums/${album.id}/photos`}>{album.title}</Link>
+                    <Link to={`/users/${id}/albums/${album.id}/photos`}>#{album.id} - {album.title}</Link>
                 </div>
             ))}
 
