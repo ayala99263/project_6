@@ -4,7 +4,6 @@ import axios from 'axios';
 export const useResource = (resourceName, queryParams = {}) => {
     const [originalData, setOriginalData] = useState([]);
     const [data, setData] = useState([]);
-
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -17,15 +16,13 @@ export const useResource = (resourceName, queryParams = {}) => {
             const res = await axios.get(baseUrl, { params: finalParams });
 
             if (shouldAppend) {
-                const newData = [...originalData, ...res.data];
-                setOriginalData(newData);
-                setData(newData);
-                return res.data;
+                setOriginalData(prev => [...prev, ...res.data]);
+                setData(prev => [...prev, ...res.data]);
             } else {
                 setOriginalData(res.data);
                 setData(res.data);
-                return res.data;
             }
+            return res.data;
         } catch (err) {
             setError(err);
         } finally {
@@ -45,17 +42,17 @@ export const useResource = (resourceName, queryParams = {}) => {
         }
     };
 
+    // הוספה - מתוקן לשימוש ב-prev
     const add = async (newItem) => {
         try {
             setLoading(true);
             const res = await axios.post(baseUrl, { ...newItem, ...queryParams });
-            const newData = [...originalData, res.data];
-            setOriginalData(newData);
-            setData(newData);
+            
+            // שימוש ב-prev מבטיח שלא נאבד נתונים שנטענו ב-Load More
+            setOriginalData(prev => [...prev, res.data]);
+            setData(prev => [...prev, res.data]);
         } catch (err) { setError(err) }
-        finally {
-            setLoading(false);
-        }
+        finally { setLoading(false); }
     };
 
     const remove = async (id) => {
@@ -66,9 +63,7 @@ export const useResource = (resourceName, queryParams = {}) => {
             setOriginalData(prev => helper(prev));
             setData(prev => helper(prev));
         } catch (err) { setError(err) }
-        finally {
-            setLoading(false);
-        }
+        finally { setLoading(false); }
     };
 
     const update = async (id, updatedFields) => {
@@ -79,19 +74,8 @@ export const useResource = (resourceName, queryParams = {}) => {
             setOriginalData(prev => helper(prev));
             setData(prev => helper(prev));
         } catch (err) { setError(err) }
-        finally {
-            setLoading(false);
-        }
+        finally { setLoading(false); }
     };
 
-    return {
-        data,
-        loading,
-        error,
-        add,
-        remove,
-        update,
-        fetchData,
-        filterData
-    };
+    return { data, loading, error, add, remove, update, fetchData, filterData };
 };
