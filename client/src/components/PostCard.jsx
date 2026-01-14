@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useState } from 'react';
 import PostComments from './PostComments';
 
@@ -11,6 +12,19 @@ export default function PostCard({ post, deletePost, updatePost, currentUser }) 
         updatePost(editData);
         setIsEditing(false);
     };
+
+    const handleDelete = async () => {
+        try {
+            const res = await axios.get(`http://localhost:3000/comments?postId=${post.id}`);
+            const comments = res.data;
+            await Promise.all(comments.map(c =>
+                axios.delete(`http://localhost:3000/comments/${c.id}`)
+            ));
+            deletePost();
+        } catch (err) {
+            console.error(err);
+        }
+    }
 
     return (
         <div>
@@ -52,8 +66,7 @@ export default function PostCard({ post, deletePost, updatePost, currentUser }) 
                             <div>
                                 {post.userId == currentUser.id && (<>
                                     <button onClick={() => setIsEditing(true)}>Edit</button>
-                                    <button onClick={deletePost}>Delete</button>
-                                </>)}
+                                    <button onClick={handleDelete}>Delete</button>                                </>)}
                                 <button
                                     onClick={() => setShowComments(!showComments)}
                                 >

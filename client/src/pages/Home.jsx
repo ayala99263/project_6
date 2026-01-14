@@ -1,5 +1,5 @@
 export default function Home({ user }) {
-
+    
     return (
         <div>
                 <h3>Welcome, {user.name}!</h3>

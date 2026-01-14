@@ -36,17 +36,14 @@ export default function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         if (passwordError) {
             setMessage(passwordError);
             return;
         }
-
         if (formData.password !== formData.verify_password) {
             setMessage("Passwords do not match");
             return;
         }
-
         setIsLoading(true);
         try {
             const res = await axios.get(`http://localhost:3000/users?username=${formData.username}`);

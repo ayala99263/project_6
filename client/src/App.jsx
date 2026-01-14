@@ -27,7 +27,8 @@ export default function App() {
               <Navigate to="/login" replace />
           } />
 
-          <Route path='/login' element={<Login setCurrentUser={setCurrentUser} />} />
+          <Route path='/login' element={currentUser
+            ? <Navigate to="/home" replace /> : <Login setCurrentUser={setCurrentUser} />} />
 
           <Route path='/register' >
             <Route index element={<Register />} />
