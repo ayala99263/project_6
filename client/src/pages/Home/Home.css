@@ -5,6 +5,44 @@
     padding: 16px;
 }
 
+.home-message {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    border: 2px solid #dc2626;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 16px;
+    color: #991b1b;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 8px 25px rgba(220, 38, 38, 0.2);
+    position: relative;
+    animation: alertPulse 2s ease-in-out infinite;
+}
+
+@keyframes alertPulse {
+    0%, 100% {
+        box-shadow: 0 8px 25px rgba(220, 38, 38, 0.2);
+    }
+    50% {
+        box-shadow: 0 8px 35px rgba(220, 38, 38, 0.4);
+    }
+}
+
+.home-message::before {
+    content: "⚠️";
+    font-size: 28px;
+    flex-shrink: 0;
+    animation: shake 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(2px); }
+}
+
 .home-content {
     max-width: 1200px;
     margin: 0 auto;

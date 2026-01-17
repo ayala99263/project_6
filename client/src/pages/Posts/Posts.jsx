@@ -4,9 +4,11 @@ import { useResource } from '../../hooks/useResource';
 import PostCard from "../../components/PostCard/PostCard";
 import DataViewer from '../../components/DataViewer/DataViewer';
 import './Posts.css';
+import { useUser } from '../../context/UserContext';
 
-export default function Posts({ currentUser }) {
+export default function Posts() {
     const { id } = useParams();
+    const { currentUser } = useUser();
 
     const { data: posts, add, remove, update, loading, error, filterData } = useResource('posts');
 
@@ -97,7 +99,7 @@ export default function Posts({ currentUser }) {
                             post={post}
                             deletePost={() => remove(post.id)}
                             updatePost={(updatedFields) => update(post.id, updatedFields)}
-                            currentUser={currentUser}
+                    
                         />
                     ))}
                 </div>

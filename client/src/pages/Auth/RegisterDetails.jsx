@@ -1,11 +1,15 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from "react-router-dom";
+import { useUser } from "../../context/UserContext";
+
 import "./Auth.css";
 
-export default function RegisterDetails({setCurrentUser}) {
+export default function RegisterDetails() {
     const location = useLocation();
     const navigate = useNavigate();
+    const { setCurrentUser } = useUser();
+
 
     const userData = location.state;
     useEffect(() => {
@@ -91,8 +95,7 @@ export default function RegisterDetails({setCurrentUser}) {
         if (validateForm()) {
             try {
                 const res = await axios.post("http://localhost:3000/users", formData);
-                localStorage.setItem("currentUser", JSON.stringify(res.data));
-                setCurrentUser(res.data)
+                setCurrentUser(res.data); 
                 navigate(`/home`);
             }
             catch (err) {
@@ -115,80 +118,80 @@ export default function RegisterDetails({setCurrentUser}) {
                     <h1>Complete Registration</h1>
                     <p className="auth-subtitle">Fill in your details</p>
                     <form className="auth-form" onSubmit={handleSubmit}>
-                        <input 
+                        <input
                             className="auth-input"
                             name="name"
                             type="text"
                             placeholder="Full Name"
                             onChange={handleChange}
                             value={formData.name}
-                            style={{ borderColor: errors.name ? '#ef4444' : '' }} 
+                            style={{ borderColor: errors.name ? '#ef4444' : '' }}
                         />
                         {errors.name && <span className="error-text">{errors.name}</span>}
 
-                        <input 
+                        <input
                             className="auth-input"
                             name="email"
                             type="email"
                             placeholder="Email"
                             onChange={handleChange}
                             value={formData.email}
-                            style={{ borderColor: errors.email ? '#ef4444' : '' }} 
+                            style={{ borderColor: errors.email ? '#ef4444' : '' }}
                         />
                         {errors.email && <span className="error-text">{errors.email}</span>}
 
-                        <input 
+                        <input
                             className="auth-input"
                             name="phone"
                             type="tel"
                             placeholder="Phone"
                             onChange={handleChange}
                             value={formData.phone}
-                            style={{ borderColor: errors.phone ? '#ef4444' : '' }} 
+                            style={{ borderColor: errors.phone ? '#ef4444' : '' }}
                         />
                         {errors.phone && <span className="error-text">{errors.phone}</span>}
-                        
+
                         <p className="form-section-title">Address</p>
-                        <input 
+                        <input
                             className="auth-input"
                             name="address.street"
                             type="text"
                             placeholder="Street"
                             onChange={handleChange}
                             value={formData.address.street}
-                            style={{ borderColor: errors['address.street'] ? '#ef4444' : '' }} 
+                            style={{ borderColor: errors['address.street'] ? '#ef4444' : '' }}
                         />
                         {errors['address.street'] && <span className="error-text">{errors['address.street']}</span>}
 
                         <div className="form-row">
                             <div>
-                                <input 
+                                <input
                                     className="auth-input"
                                     name="address.number"
                                     type="text"
                                     placeholder="Number"
                                     onChange={handleChange}
                                     value={formData.address.number}
-                                    style={{ borderColor: errors['address.number'] ? '#ef4444' : '' }} 
+                                    style={{ borderColor: errors['address.number'] ? '#ef4444' : '' }}
                                 />
                                 {errors['address.number'] && <span className="error-text">{errors['address.number']}</span>}
                             </div>
                             <div>
-                                <input 
+                                <input
                                     className="auth-input"
                                     name="address.city"
                                     type="text"
                                     placeholder="City"
                                     onChange={handleChange}
                                     value={formData.address.city}
-                                    style={{ borderColor: errors['address.city'] ? '#ef4444' : '' }} 
+                                    style={{ borderColor: errors['address.city'] ? '#ef4444' : '' }}
                                 />
                                 {errors['address.city'] && <span className="error-text">{errors['address.city']}</span>}
                             </div>
                         </div>
-                        
+
                         <p className="form-section-title">Company (Optional)</p>
-                        <input 
+                        <input
                             className="auth-input"
                             name="company.name"
                             type="text"
@@ -198,8 +201,8 @@ export default function RegisterDetails({setCurrentUser}) {
                             style={{ borderColor: errors['company.name'] ? '#ef4444' : '' }}
                         />
                         {errors['company.name'] && <span className="error-text">{errors['company.name']}</span>}
-                        
-                        <input 
+
+                        <input
                             className="auth-input"
                             name="company.catchPhrase"
                             type="text"
@@ -207,8 +210,8 @@ export default function RegisterDetails({setCurrentUser}) {
                             onChange={handleChange}
                             value={formData.company.catchPhrase}
                         />
-                        
-                        <input 
+
+                        <input
                             className="auth-input"
                             name="company.bs"
                             type="text"
@@ -216,7 +219,7 @@ export default function RegisterDetails({setCurrentUser}) {
                             onChange={handleChange}
                             value={formData.company.bs}
                         />
-                        
+
                         <button className="auth-button" type='submit'>Complete Registration</button>
                     </form>
                     {serverError && <p className="error-text" style={{ textAlign: 'center', marginTop: '16px' }}>{serverError}</p>}

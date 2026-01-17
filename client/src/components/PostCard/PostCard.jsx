@@ -2,8 +2,10 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import PostComments from './PostComments';
 import './PostCard.css';
+import { useUser } from '../../context/UserContext';
 
-export default function PostCard({ post, deletePost, updatePost, currentUser }) {
+export default function PostCard({ post, deletePost, updatePost}) {
+    const { currentUser } = useUser();
     const [showPost, setShowPost] = useState(false);
     const [showComments, setShowComments] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -100,7 +102,7 @@ export default function PostCard({ post, deletePost, updatePost, currentUser }) 
                                 </button>
                             </div>
 
-                            {showComments && <PostComments postId={post.id} currentUser={currentUser} />}
+                            {showComments && <PostComments postId={post.id} />}
                         </>
                     )}
                 </div>

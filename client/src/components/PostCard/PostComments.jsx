@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useResource } from '../../hooks/useResource';
 import './PostCard.css';
+import { useUser } from '../../context/UserContext';
 
-export default function PostComments({ postId, currentUser }) {
+export default function PostComments({ postId}) {
+    const { currentUser } = useUser();
     const { data: comments, add, remove, update } = useResource('comments', { postId });
     const [newCommentBody, setNewCommentBody] = useState("");
     const [editingId, setEditingId] = useState(null);

@@ -1,8 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
 import './Layout.css';
+import { useUser } from '../../context/UserContext';
 
-export default function Navbar({ user, handleLogout, setShowInfo }) {
+export default function Navbar({ handleLogout, setShowInfo }) {
   const location = useLocation();
+  const { currentUser } = useUser()
 
   return (
     <nav className="navbar">
@@ -10,19 +12,19 @@ export default function Navbar({ user, handleLogout, setShowInfo }) {
         <button className="navbar-button" onClick={() => setShowInfo(true)}>Info</button>
         <Link
           className={`navbar-link ${location.pathname.includes('/todos') ? 'active' : ''}`}
-          to={`/users/${user.id}/todos`}
+          to={`/users/${currentUser.id}/todos`}
         >
           Todos
         </Link>
         <Link
           className={`navbar-link ${location.pathname.includes('/posts') ? 'active' : ''}`}
-          to={`/users/${user.id}/posts`}
+          to={`/users/${currentUser.id}/posts`}
         >
           Posts
         </Link>
         <Link
           className={`navbar-link ${location.pathname.includes('/albums') ? 'active' : ''}`}
-          to={`/users/${user.id}/albums`}
+          to={`/users/${currentUser.id}/albums`}
         >
           Albums
         </Link>

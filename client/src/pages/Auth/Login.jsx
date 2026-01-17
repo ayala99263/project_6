@@ -1,11 +1,14 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "../../context/UserContext"; 
 import "./Auth.css";
 
-export default function Login({setCurrentUser}) {
+
+export default function Login() { 
 
     const navigate = useNavigate();
+    const { setCurrentUser } = useUser(); 
 
     const [formData, setFormData] = useState({
         username: "",
@@ -29,8 +32,9 @@ export default function Login({setCurrentUser}) {
             if (res.data.length > 0) {
                 if (res.data[0].website === password) {
                     setMessage("Login successful");
-                    localStorage.setItem("currentUser", JSON.stringify(res.data[0]));
-                    setCurrentUser(res.data[0]);
+                    
+                    setCurrentUser(res.data[0]); 
+                    
                     navigate(`/home`);
                 }
                 else {
@@ -59,7 +63,8 @@ export default function Login({setCurrentUser}) {
 
     return (
         <div className="auth-container">
-            <div className="auth-side">
+            {/* ... שאר ה-HTML נשאר זהה ... */}
+             <div className="auth-side">
                 <div className="auth-side-content">
                     <h2>Welcome Back</h2>
                     <p>Enter your credentials to access your account</p>
