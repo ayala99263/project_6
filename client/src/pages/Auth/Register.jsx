@@ -4,6 +4,8 @@ import axios from "axios";
 import "./Auth.css";
 
 export default function Register() {
+    const baseUrl = "http://localhost:3000/users"
+
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
@@ -47,7 +49,7 @@ export default function Register() {
         }
         setIsLoading(true);
         try {
-            const res = await axios.get(`http://localhost:3000/users?username=${formData.username}`);
+            const res = await axios.get(`${baseUrl}?username=${formData.username}`);
             if (res.data.length > 0) {
                 setMessage(<> User already exists, please <Link to="/Login">login</Link></>);
             } else {

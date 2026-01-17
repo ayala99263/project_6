@@ -1,59 +1,51 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useResource } from '../../hooks/useResource';
+import { useSearch } from '../../hooks/useSearch';
+import SearchBar from '../../components/SearchBar/SearchBar';
 import DataViewer from '../../components/DataViewer/DataViewer';
 import './Albums.css';
 
 export default function Albums() {
     const { id } = useParams();
-    const { data: albums, add, filterData, error, loading } = useResource('albums', { userId: id });
-    const [addAlbumInput, setaddAlbumInput] = useState(false);
-    const [newAlbumTitle, setnewAlbumTitle] = useState("");
-    const [searchTerm, setSearchTerm] = useState("");
-    const [searchBy, setSearchBy] = useState("title");
+    const { data: albums, add, error, loading } = useResource('albums', { userId: id });
+
+    const searchStrategies = {
+        title: (album, val) => album.title.toLowerCase().includes(val),
+        id: (album, val) => album.id.toString().includes(val)
+    };
+
+    const { 
+        filteredData: displayAlbums,
+        searchTerm, setSearchTerm, searchBy, setSearchBy, searchOptions 
+    } = useSearch(albums, searchStrategies);
+
+    const [addAlbumInput, setAddAlbumInput] = useState(false);
+    const [newAlbumTitle, setNewAlbumTitle] = useState("");
 
     const handleAdd = async (e) => {
         e.preventDefault();
         if (!newAlbumTitle) return;
-
         await add({ title: newAlbumTitle });
-
-        setnewAlbumTitle("");
-        setaddAlbumInput(false);
+        setNewAlbumTitle("");
+        setAddAlbumInput(false);
+        setSearchTerm("");
     };
-
-    useEffect(() => {
-        if (!searchTerm) {
-            filterData(null);
-        } else {
-            filterData(album => {
-                const val = searchTerm.toLowerCase();
-                if (searchBy === 'id') return album.id.toString().includes(val);
-                return album.title.toLowerCase().includes(val);
-            });
-        }
-    }, [searchTerm, searchBy]);
 
     return (
         <div className="albums-page">
             <div className="albums-controls">
-                <label>Search by:</label>
-                <select value={searchBy} onChange={(e) => setSearchBy(e.target.value)}>
-                    <option value="title">Title</option>
-                    <option value="id">ID</option>
-                </select>
-                <input
-                    type="text"
-                    placeholder={`Search by ${searchBy}...`}
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                <SearchBar 
+                    searchTerm={searchTerm} setSearchTerm={setSearchTerm}
+                    searchBy={searchBy} setSearchBy={setSearchBy}
+                    options={searchOptions}
                 />
             </div>
 
             <div className="albums-header">
                 <button 
                     className={`add-album-btn ${addAlbumInput ? 'cancel' : ''}`}
-                    onClick={() => setaddAlbumInput(!addAlbumInput)}
+                    onClick={() => setAddAlbumInput(!addAlbumInput)}
                 >
                     {addAlbumInput ? 'Cancel' : 'Add New Album'}
                 </button>
@@ -64,16 +56,16 @@ export default function Albums() {
                             type="text"
                             placeholder="Enter album title..."
                             value={newAlbumTitle}
-                            onChange={(e) => setnewAlbumTitle(e.target.value)}
+                            onChange={(e) => setNewAlbumTitle(e.target.value)}
                         />
                         <button type="submit">Save</button>
                     </form>
                 )}
             </div>
 
-            <DataViewer loading={loading} error={error} data={albums}>
+            <DataViewer loading={loading} error={error} data={displayAlbums}>
                 <div className="albums-grid">
-                    {albums.map(album => (
+                    {displayAlbums.map(album => (
                         <Link 
                             key={album.id}
                             to={`/users/${id}/albums/${album.id}/photos`}
@@ -88,5 +80,5 @@ export default function Albums() {
                 </div>
             </DataViewer>
         </div>
-    )
+    );
 }

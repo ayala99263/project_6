@@ -6,6 +6,8 @@ import { useUser } from "../../context/UserContext";
 import "./Auth.css";
 
 export default function RegisterDetails() {
+    const baseUrl = "http://localhost:3000/users"
+
     const location = useLocation();
     const navigate = useNavigate();
     const { setCurrentUser } = useUser();
@@ -94,8 +96,8 @@ export default function RegisterDetails() {
 
         if (validateForm()) {
             try {
-                const res = await axios.post("http://localhost:3000/users", formData);
-                setCurrentUser(res.data); 
+                const res = await axios.post(baseUrl, formData);
+                setCurrentUser(res.data);
                 navigate(`/home`);
             }
             catch (err) {

@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 export const useResource = (resourceName, queryParams = {}) => {
-    const [originalData, setOriginalData] = useState([]);
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -16,10 +15,8 @@ export const useResource = (resourceName, queryParams = {}) => {
             const res = await axios.get(baseUrl, { params: finalParams });
 
             if (shouldAppend) {
-                setOriginalData(prev => [...prev, ...res.data]);
                 setData(prev => [...prev, ...res.data]);
             } else {
-                setOriginalData(res.data);
                 setData(res.data);
             }
             return res.data;
@@ -34,22 +31,10 @@ export const useResource = (resourceName, queryParams = {}) => {
         if (resourceName) fetchData();
     }, [resourceName, JSON.stringify(queryParams)]);
 
-    const filterData = (filterFn) => {
-        if (!filterFn) {
-            setData(originalData);
-        } else {
-            setData(originalData.filter(filterFn));
-        }
-    };
-
-    // הוספה - מתוקן לשימוש ב-prev
     const add = async (newItem) => {
         try {
             setLoading(true);
             const res = await axios.post(baseUrl, { ...newItem, ...queryParams });
-            
-            // שימוש ב-prev מבטיח שלא נאבד נתונים שנטענו ב-Load More
-            setOriginalData(prev => [...prev, res.data]);
             setData(prev => [...prev, res.data]);
         } catch (err) { setError(err) }
         finally { setLoading(false); }
@@ -59,9 +44,7 @@ export const useResource = (resourceName, queryParams = {}) => {
         try {
             setLoading(true);
             await axios.delete(`${baseUrl}/${id}`);
-            const helper = (list) => list.filter(item => item.id !== id);
-            setOriginalData(prev => helper(prev));
-            setData(prev => helper(prev));
+            setData(prev => prev.filter(item => item.id !== id));
         } catch (err) { setError(err) }
         finally { setLoading(false); }
     };
@@ -70,12 +53,10 @@ export const useResource = (resourceName, queryParams = {}) => {
         try {
             setLoading(true);
             await axios.patch(`${baseUrl}/${id}`, updatedFields);
-            const helper = (list) => list.map(item => item.id === id ? { ...item, ...updatedFields } : item);
-            setOriginalData(prev => helper(prev));
-            setData(prev => helper(prev));
+            setData(prev => prev.map(item => item.id === id ? { ...item, ...updatedFields } : item));
         } catch (err) { setError(err) }
         finally { setLoading(false); }
     };
 
-    return { data, loading, error, add, remove, update, fetchData, filterData };
+    return { data, loading, error, add, remove, update, fetchData };
 };

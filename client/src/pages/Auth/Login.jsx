@@ -1,14 +1,15 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { useUser } from "../../context/UserContext"; 
+import { useUser } from "../../context/UserContext";
 import "./Auth.css";
 
 
-export default function Login() { 
+export default function Login() {
+    const baseUrl = "http://localhost:3000/users"
 
     const navigate = useNavigate();
-    const { setCurrentUser } = useUser(); 
+    const { setCurrentUser } = useUser();
 
     const [formData, setFormData] = useState({
         username: "",
@@ -27,14 +28,14 @@ export default function Login() {
         const password = formData.password;
 
         try {
-            const res = await axios.get(`http://localhost:3000/users?username=${username}`);
+            const res = await axios.get(`${baseUrl}?username=${username}`);
 
             if (res.data.length > 0) {
                 if (res.data[0].website === password) {
                     setMessage("Login successful");
-                    
-                    setCurrentUser(res.data[0]); 
-                    
+
+                    setCurrentUser(res.data[0]);
+
                     navigate(`/home`);
                 }
                 else {
@@ -63,7 +64,7 @@ export default function Login() {
 
     return (
         <div className="auth-container">
-             <div className="auth-side">
+            <div className="auth-side">
                 <div className="auth-side-content">
                     <h2>Welcome Back</h2>
                     <p>Enter your credentials to access your account</p>

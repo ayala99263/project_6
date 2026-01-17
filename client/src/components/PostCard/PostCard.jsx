@@ -4,25 +4,12 @@ import PostComments from './PostComments';
 import './PostCard.css';
 import { useUser } from '../../context/UserContext';
 
-export default function PostCard({ post, deletePost, updatePost}) {
+export default function PostCard({ post, deletePost, updatePost, author }) {
     const { currentUser } = useUser();
     const [showPost, setShowPost] = useState(false);
     const [showComments, setShowComments] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editData, setEditData] = useState({ title: post.title, body: post.body });
-    const [postAuthor, setPostAuthor] = useState(null);
-
-    useEffect(() => {
-        const fetchAuthor = async () => {
-            try {
-                const res = await axios.get(`http://localhost:3000/users/${post.userId}`);
-                setPostAuthor(res.data);
-            } catch (err) {
-                console.error(err);
-            }
-        };
-        fetchAuthor();
-    }, [post.userId]);
 
     const handleSave = () => {
         updatePost(editData);
@@ -48,19 +35,19 @@ export default function PostCard({ post, deletePost, updatePost}) {
         return colors[index];
     };
 
-    const firstLetter = postAuthor?.name?.charAt(0).toUpperCase() || '?';
+    const firstLetter = author?.name?.charAt(0).toUpperCase() || '?';
 
     return (
         <div className="post-card">
             <div className="post-header" onClick={() => setShowPost(!showPost)}>
                 <span className="post-id">#{post.id}</span>
                 <div className="post-header-content">
-                    {postAuthor && (
+                    {author && (
                         <div className="post-author">
-                            <div className="post-avatar" style={{ background: getAvatarColor(postAuthor.name) }}>
+                            <div className="post-avatar" style={{ background: getAvatarColor(author.name) }}>
                                 {firstLetter}
                             </div>
-                            <span className="post-author-name">{postAuthor.name}</span>
+                            <span className="post-author-name">{author.name}</span>
                         </div>
                     )}
                     <h3 className="post-title">{post.title}</h3>

@@ -1,19 +1,31 @@
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import { useResource } from '../../hooks/useResource';
-import PostCard from "../../components/PostCard/PostCard";
-import DataViewer from '../../components/DataViewer/DataViewer';
-import './Posts.css';
+import { useSearch } from '../../hooks/useSearch';
 import { useUser } from '../../context/UserContext';
+import SearchBar from '../../components/SearchBar/SearchBar';
+import DataViewer from '../../components/DataViewer/DataViewer';
+import PostCard from "../../components/PostCard/PostCard";
+import './Posts.css';
 
 export default function Posts() {
     const { id } = useParams();
     const { currentUser } = useUser();
 
-    const { data: posts, add, remove, update, loading, error, filterData } = useResource('posts');
+    const { data: posts, add, remove, update, loading, error } = useResource('posts', { _expand: 'user' });
 
-    const [searchTerm, setSearchTerm] = useState("");
-    const [searchBy, setSearchBy] = useState("title");
+    const { data: users } = useResource('users');
+
+    const searchStrategies = {
+        title: (post, val) => post.title.toLowerCase().includes(val),
+        id: (post, val) => post.id.toString().includes(val),
+        myPosts: (post) => post.userId == currentUser?.id
+    };
+
+    const {
+        filteredData: displayPosts,
+        searchTerm, setSearchTerm, searchBy, setSearchBy, searchOptions
+    } = useSearch(posts, searchStrategies);
 
     const [addPostInput, setAddPostInput] = useState(false);
     const [newPost, setNewPost] = useState({ title: '', body: '' });
@@ -24,49 +36,21 @@ export default function Posts() {
         await add({ ...newPost, userId: currentUser.id });
         setNewPost({ title: '', body: '' });
         setAddPostInput(false);
-        setSearchTerm("")
+        setSearchTerm("");
     };
-
-    useEffect(() => {
-        if (!searchTerm && searchBy !== 'myPosts') {
-            filterData(null);
-        }
-        else {
-            filterData((post) => {
-                switch (searchBy) {
-                    case 'id':
-                        return post.id.toString().includes(searchTerm);
-                    case 'title':
-                        return post.title.toLowerCase().includes(searchTerm.toLowerCase());
-                    case 'myPosts':
-                        return post.userId == currentUser.id;
-                }
-
-            });
-        }
-    }, [searchTerm, searchBy])
-
 
     return (
         <div className="posts-page">
             <div className="posts-controls">
-                <label>Search by:</label>
-                <select value={searchBy} onChange={(e) => setSearchBy(e.target.value)}>
-                    <option value="title">Title</option>
-                    <option value="id">ID</option>
-                    <option value="myPosts">My Posts</option>
-                </select>
-                <input
-                    type="text"
-                    placeholder={`Search by ${searchBy}...`}
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                <SearchBar
+                    searchTerm={searchTerm} setSearchTerm={setSearchTerm}
+                    searchBy={searchBy} setSearchBy={setSearchBy}
+                    options={searchOptions}
                 />
-                <button className="clear-btn" onClick={() => setSearchTerm("")}>Clear</button>
             </div>
 
             <div className="posts-header">
-                <button 
+                <button
                     className={`add-post-btn ${addPostInput ? 'cancel' : ''}`}
                     onClick={() => setAddPostInput(!addPostInput)}
                 >
@@ -77,12 +61,12 @@ export default function Posts() {
                     <form className="add-post-form" onSubmit={handleAdd}>
                         <input
                             type="text"
-                            placeholder="Post title..."
+                            placeholder="Title..."
                             value={newPost.title}
                             onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
                         />
                         <textarea
-                            placeholder="Post content..."
+                            placeholder="Content..."
                             value={newPost.body}
                             onChange={(e) => setNewPost({ ...newPost, body: e.target.value })}
                         />
@@ -91,19 +75,19 @@ export default function Posts() {
                 )}
             </div>
 
-            <DataViewer loading={loading} error={error} data={posts}>
+            <DataViewer loading={loading} error={error} data={displayPosts}>
                 <div className="posts-list">
-                    {posts.map(post => (
+                    {displayPosts.map(post => (
                         <PostCard
                             key={post.id}
                             post={post}
                             deletePost={() => remove(post.id)}
                             updatePost={(updatedFields) => update(post.id, updatedFields)}
-                    
+                            author = {users?.find(u => u.id == post.userId)}
                         />
                     ))}
                 </div>
             </DataViewer>
         </div>
-    )
+    );
 }
