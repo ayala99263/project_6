@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import "./Auth.css";
 
@@ -49,7 +49,7 @@ export default function Register() {
         try {
             const res = await axios.get(`http://localhost:3000/users?username=${formData.username}`);
             if (res.data.length > 0) {
-                setMessage("User already exists, please login");
+                setMessage(<> User already exists, please <Link to="/Login">login</Link></>);
             } else {
                 setMessage("Registration successful");
                 navigate('/register/details', { state: { username: formData.username, password: formData.password } });
@@ -78,35 +78,35 @@ export default function Register() {
                     <h1>Sign Up</h1>
                     <p className="auth-subtitle">Create your account</p>
                     <form className="auth-form" onSubmit={handleSubmit}>
-                        <input 
+                        <input
                             className="auth-input"
-                            name="username" 
-                            type="text" 
-                            placeholder="Username" 
-                            onChange={handleChange} 
-                            value={formData.username} 
-                            required 
+                            name="username"
+                            type="text"
+                            placeholder="Username"
+                            onChange={handleChange}
+                            value={formData.username}
+                            required
                         />
 
-                        <input 
+                        <input
                             className="auth-input"
-                            name="password" 
-                            type="password" 
-                            placeholder="Password" 
-                            onChange={handleChange} 
-                            value={formData.password} 
-                            required 
+                            name="password"
+                            type="password"
+                            placeholder="Password"
+                            onChange={handleChange}
+                            value={formData.password}
+                            required
                         />
                         {passwordError && <p className="error-text">{passwordError}</p>}
 
-                        <input 
+                        <input
                             className="auth-input"
-                            name="verify_password" 
-                            type="password" 
-                            placeholder="Verify password" 
-                            onChange={handleChange} 
-                            value={formData.verify_password} 
-                            required 
+                            name="verify_password"
+                            type="password"
+                            placeholder="Verify password"
+                            onChange={handleChange}
+                            value={formData.verify_password}
+                            required
                         />
 
                         <button className="auth-button" type="submit" disabled={isLoading || passwordError}>
