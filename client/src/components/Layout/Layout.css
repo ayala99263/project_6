@@ -251,134 +251,30 @@
     .info-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .info-modal {
         margin: 20px;
     }
-    
+
     .info-header {
         padding: 24px;
     }
-    
+
     .info-content {
         padding: 24px;
     }
 }
 
-/* Home Page Styles */
-.home-container {
-    min-height: calc(100vh - 65px);
-    background-color: #fafbfc;
-    padding: 16px;
-}
-
-.home-content {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.home-header {
-    background-color: white;
-    border-radius: 12px;
-    padding: 40px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    margin-bottom: 32px;
-}
-
-.user-profile {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.user-avatar {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 36px;
-    font-weight: 700;
-    flex-shrink: 0;
-}
-
-.home-header h3 {
-    color: #1e293b;
-    font-size: 32px;
-    font-weight: 700;
-    margin-bottom: 8px;
-}
-
-.home-header p {
-    color: #64748b;
-    font-size: 16px;
-    line-height: 1.6;
-    margin: 0;
-}
-
-.home-cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-}
-
-.home-card {
-    background-color: white;
-    border-radius: 12px;
-    padding: 32px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    transition: all 0.2s;
-    text-decoration: none;
-    color: inherit;
-    display: block;
-    cursor: pointer;
-}
-
-.home-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
-}
-
-.home-card h4 {
-    color: #1e293b;
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 8px;
-}
-
-.home-card p {
-    color: #64748b;
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-@media (max-width: 768px) {
-    .home-cards {
-        grid-template-columns: 1fr;
-    }
-    
-    .user-profile {
-        flex-direction: column;
-        text-align: center;
-    }
-}
-
-
-
 .app-layout {
-    
     /* 1. קובעים רוחב ספציפי כדי שלא יהיה תלוי בתוכן */
-    width: 1000px; 
-    
+    width: 1000px;
+
     /* 2. דואגים שלא יחרוג מהמסך בניידים (ריספונסיביות) */
-    max-width: 95vw; 
-    
+    max-width: 95vw;
+
     /* 3. ממרכזים את הכרטיסייה באמצע המסך */
-    margin: 40px auto; 
-    
+    margin: 40px auto;
+
     /* 4. מוודאים שפאדינג לא מגדיל את הרוחב */
     box-sizing: border-box;
-    overflow: hidden; /* מונע גלישה של תוכן פנימי החוצה */
 }

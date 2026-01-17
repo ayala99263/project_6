@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import { useResource } from '../hooks/useResource';
-import DataViewer from '../components/DataViewer';
+import { useResource } from '../../hooks/useResource';
+import DataViewer from '../../components/DataViewer/DataViewer';
 import './AlbumPhotos.css';
 
 export default function AlbumPhotos() {

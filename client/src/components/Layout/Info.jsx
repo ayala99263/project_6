@@ -1,4 +1,4 @@
-import '../pages/Home.css';
+import './Layout.css';
 
 export default function Info({ user, setShowInfoState }) {
     const getAvatarColor = (name) => {

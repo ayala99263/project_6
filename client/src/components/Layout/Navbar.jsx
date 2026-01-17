@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
-import '../pages/Home.css';
+import './Layout.css';
 
-const Navbar = ({ user, handleLogout, setShowInfo }) => {
+export default function Navbar({ user, handleLogout, setShowInfo }) {
   const location = useLocation();
 
   return (
@@ -32,6 +32,3 @@ const Navbar = ({ user, handleLogout, setShowInfo }) => {
   );
 };
 
-
-
-export default Navbar;

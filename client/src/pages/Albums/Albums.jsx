@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useResource } from '../hooks/useResource';
-import DataViewer from '../components/DataViewer';
+import { useResource } from '../../hooks/useResource';
+import DataViewer from '../../components/DataViewer/DataViewer';
 import './Albums.css';
 
 export default function Albums() {

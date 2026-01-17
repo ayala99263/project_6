@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useResource } from '../hooks/useResource';
-import DataViewer from '../components/DataViewer';
+import { useResource } from '../../hooks/useResource';
+import DataViewer from '../../components/DataViewer/DataViewer';
 import './Todos.css';
 
 export default function Todos() {

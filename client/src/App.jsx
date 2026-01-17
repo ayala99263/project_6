@@ -1,15 +1,15 @@
 import './App.css'
 import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Home from './pages/Home';
-import Layout from './components/Layout';
-import RegisterDetails from './pages/RegisterDetails';
-import Todos from './pages/Todos';
-import Posts from './pages/Posts';
-import Albums from './pages/Albums';
-import AlbumPhotos from './pages/AlbumPhotos';
+import Login from './pages/Auth/Login';
+import Register from './pages/Auth/Register';
+import Home from './pages/Home/Home';
+import Layout from './components/Layout/Layout';
+import RegisterDetails from './pages/Auth/RegisterDetails';
+import Todos from './pages/Todos/Todos';
+import Posts from './pages/Posts/Posts';
+import Albums from './pages/Albums/Albums';
+import AlbumPhotos from './pages/Albums/AlbumPhotos';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState(() => {

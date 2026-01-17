@@ -1,8 +1,8 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { useResource } from '../hooks/useResource';
-import PostCard from "../components/PostCard";
-import DataViewer from '../components/DataViewer';
+import { useResource } from '../../hooks/useResource';
+import PostCard from "../../components/PostCard/PostCard";
+import DataViewer from '../../components/DataViewer/DataViewer';
 import './Posts.css';
 
 export default function Posts({ currentUser }) {

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useResource } from '../hooks/useResource';
+import { useResource } from '../../hooks/useResource';
 import './PostCard.css';
 
 export default function PostComments({ postId, currentUser }) {

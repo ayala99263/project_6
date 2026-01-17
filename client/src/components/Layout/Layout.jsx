@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { Outlet, useNavigate, Link } from 'react-router-dom';
 import Navbar from './Navbar';
 import Info from './Info'
-import '../pages/Home.css';
+import './Layout.css';
 
 export default function Layout({ currentUser, setCurrentUser }) {
     const navigate = useNavigate();
