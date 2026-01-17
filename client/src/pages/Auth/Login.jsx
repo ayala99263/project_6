@@ -63,7 +63,6 @@ export default function Login() {
 
     return (
         <div className="auth-container">
-            {/* ... שאר ה-HTML נשאר זהה ... */}
              <div className="auth-side">
                 <div className="auth-side-content">
                     <h2>Welcome Back</h2>
