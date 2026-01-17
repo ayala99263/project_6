@@ -110,6 +110,7 @@ export default function Todos() {
                             <span className="todo-id">#{todo.id}</span>
                             <input
                                 type="checkbox"
+                                className="todo-checkbox"
                                 checked={todo.completed}
                                 onChange={() => update(todo.id, { completed: !todo.completed })}
                             />
@@ -117,19 +118,22 @@ export default function Todos() {
                             {editingId === todo.id ? (
                                 <>
                                     <input 
+                                        className="todo-edit-input"
                                         type="text" 
                                         value={editTitle} 
                                         onChange={(e) => setEditTitle(e.target.value)} 
                                     />
-                                    <button onClick={() => handleSaveEdit(todo.id)}>Save</button>
-                                    <button onClick={() => setEditingId(null)}>Cancel</button>
+                                    <div className="todo-actions">
+                                        <button className="todo-btn save" onClick={() => handleSaveEdit(todo.id)}>Save</button>
+                                        <button className="todo-btn cancel" onClick={() => setEditingId(null)}>Cancel</button>
+                                    </div>
                                 </>
                             ) : (
                                 <>
-                                    <span className={todo.completed ? 'completed' : ''}>{todo.title}</span>
-                                    <div>
-                                        <button onClick={() => { setEditingId(todo.id); setEditTitle(todo.title); }}>Edit</button>
-                                        <button onClick={() => remove(todo.id)}>Delete</button>
+                                    <span className={`todo-content ${todo.completed ? 'completed' : ''}`}>{todo.title}</span>
+                                    <div className="todo-actions">
+                                        <button className="todo-btn edit" onClick={() => { setEditingId(todo.id); setEditTitle(todo.title); }}>Edit</button>
+                                        <button className="todo-btn delete" onClick={() => remove(todo.id)}>Delete</button>
                                     </div>
                                 </>
                             )}
